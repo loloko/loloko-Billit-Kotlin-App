@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#253447</color>
+    <color name="colorPrimaryDark">#1C2939</color>
+    <color name="colorAccent">#4D5D6C</color>
+
+    <color name="statusBar">#141C28</color>
+
+    <color name="billit_red">#F2537B</color>
+    <color name="billit_blue">#30A9E2</color>
+
+    <color name="text_black">#000000</color>
+    <color name="text_white">#ffffff</color>
+
+    <color name="grey">#808080</color>
+    <color name="facebook_button">#485a96</color>
+
+</resources>
