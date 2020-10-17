@@ -40,7 +40,7 @@ fun Context.toastMessage(
     toast.show()
 }
 
-fun Context.createLoadingPopup(@StringRes msg: Int?): AlertDialog {
+fun Context.createLoadingPopup(@StringRes msg: Int? = null): AlertDialog {
     val builder = AlertDialog.Builder(this)
     val view: View = inflate(R.layout.dialog_loading)
 
