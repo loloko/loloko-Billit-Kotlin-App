@@ -42,7 +42,7 @@ class LoginActivity : DaggerAppCompatActivity() {
     }
 
     fun resetPasswordClick(view: View?) {
-        startActivity(Intent(this, ResetPasswordActivity::class.java))
+        startActivity(Intent(this, ForgotPasswordActivity::class.java))
     }
 
 }

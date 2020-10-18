@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.fernando.billit.di.ViewModelKey
 import com.fernando.billit.viewmodel.LoginViewModel
 import com.fernando.billit.viewmodel.RegisterViewModel
+import com.fernando.billit.viewmodel.ForgotPasswordViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -20,5 +21,10 @@ abstract class AuthViewModelModule {
     @IntoMap
     @ViewModelKey(RegisterViewModel::class)
     abstract fun bindRegisterViewModel(viewModel: RegisterViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ForgotPasswordViewModel::class)
+    abstract fun bindForgotPasswordViewModel(viewModel: ForgotPasswordViewModel): ViewModel
 
 }

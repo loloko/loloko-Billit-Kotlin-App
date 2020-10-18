@@ -7,7 +7,7 @@ import com.fernando.billit.di.main.*
 import com.fernando.billit.ui.LoginActivity
 import com.fernando.billit.ui.MainActivity
 import com.fernando.billit.ui.RegisterActivity
-import com.fernando.billit.ui.ResetPasswordActivity
+import com.fernando.billit.ui.ForgotPasswordActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -24,7 +24,7 @@ abstract class ActivityModule {
 
     @AuthScope
     @ContributesAndroidInjector(modules = [AuthViewModelModule::class, AuthModule::class])
-    abstract fun contributeForgotPasswordActivity(): ResetPasswordActivity
+    abstract fun contributeForgotPasswordActivity(): ForgotPasswordActivity
 
 
     @MainScope

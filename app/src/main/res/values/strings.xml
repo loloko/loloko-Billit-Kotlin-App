@@ -34,6 +34,7 @@
     <string name="invalid_email">Invalid e-mail</string>
     <string name="user_collision">E-mail already registered</string>
     <string name="error_user_register">Error to register user, please try again</string>
+    <string name="error_send_email">Error to send email, please try again</string>
     <string name="required_name">Please insert name</string>
     <string name="required_confirm_password">Please insert confirm password</string>
     <string name="password_not_match">Passwords don\'t match</string>
