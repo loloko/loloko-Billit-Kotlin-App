@@ -29,4 +29,24 @@ class AuthResource<T>(val status: AuthStatus, val data: T?, val message: Int?) {
             return AuthResource(AuthStatus.RESET_PASSWORD, null, null)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as AuthResource<*>
+
+        if (status != other.status) return false
+        if (message != other.message) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = status.hashCode()
+        result = 31 * result + (message ?: 0)
+        return result
+    }
+
+
 }

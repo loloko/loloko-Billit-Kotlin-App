@@ -3,12 +3,8 @@ package com.fernando.billit.ui
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.fernando.billit.databinding.ActivityRegisterBinding
-import com.fernando.billit.extension.TAG
 import com.fernando.billit.extension.createLoadingPopup
 import com.fernando.billit.extension.toastMessage
 import com.fernando.billit.util.AuthResource.AuthStatus.*
@@ -80,6 +76,7 @@ class RegisterActivity : DaggerAppCompatActivity() {
                     NOT_AUTHENTICATED -> {
                         loadingPopup.dismiss()
                     }
+                    else -> loadingPopup.dismiss()
                 }
             }
         })
