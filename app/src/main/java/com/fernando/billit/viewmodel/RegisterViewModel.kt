@@ -62,7 +62,7 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
         CoroutineScope(IO).launch {
             val value = authRepository.registerUserWithEmail(user)
 
-            if (value.data != null)
+            if (value.status == AuthResource.AuthStatus.AUTHENTICATED)
                 authRepository.insertUserFirebaseDatabase(user)
 
 

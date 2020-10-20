@@ -5,17 +5,12 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
-import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.fernando.billit.R
-import com.google.firebase.database.DatabaseReference
 import kotlin.math.roundToInt
 
 fun Context.toastMessage(
@@ -58,22 +53,6 @@ fun Context.createBasicDialog(@StringRes stringRef: Int) {
     builder.setMessage(stringRef)
     builder.setCancelable(false)
     builder.setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
-    builder.create().show()
-}
-
-fun Context.createDeletePopup(dbRef: DatabaseReference) {
-    val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
-    builder.setTitle(R.string.attention)
-    builder.setMessage(R.string.delete_firebase)
-    builder.setCancelable(false)
-    builder.setPositiveButton(R.string.cancel) { dialog, _ -> dialog!!.dismiss() }
-    builder.setNegativeButton(R.string.delete) { dialog, _ ->
-
-        dbRef.removeValue()
-
-        dialog.dismiss()
-    }
-
     builder.create().show()
 }
 

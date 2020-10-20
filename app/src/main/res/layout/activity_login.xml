@@ -8,12 +8,12 @@
     tools:context=".ui.LoginActivity">
 
     <ImageView
+        android:id="@+id/imClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:contentDescription="@string/close"
-        android:onClick="btCloseClick"
         android:padding="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
-            android:text="@string/signin"
+            android:text="@string/sign_in"
             android:textColor="@color/text_white"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -73,21 +73,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="30dp"
-            android:onClick="resetPasswordClick"
             android:text="@string/forgot_password"
             android:textAlignment="textEnd"
             android:textColor="@color/billit_blue"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/bt_signin"
+            android:id="@+id/bt_sign_in_with_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_rounded_6dp"
             android:backgroundTint="@color/billit_blue"
             android:elevation="5dp"
-            android:onClick="btSignInWithEmailClick"
-            android:text="@string/bt_signin"
+            android:text="@string/bt_sign_in"
             android:textColor="@color/text_white" />
 
 
@@ -117,11 +115,11 @@
                 app:srcCompat="@drawable/facebook_logo" />
 
             <Button
+                android:id="@+id/bt_sign_in_with_facebook"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/facebook_button"
-                android:onClick="btFacebookClick"
-                android:text="@string/signin_facebook"
+                android:text="@string/sign_in_facebook"
                 android:textColor="@color/text_white" />
 
         </LinearLayout>
@@ -143,11 +141,11 @@
                 app:srcCompat="@drawable/google_logo" />
 
             <Button
+                android:id="@+id/bt_sign_in_with_google"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#4F72E4"
-                android:onClick="btSignInGoogleClick"
-                android:text="@string/signin_google"
+                android:text="@string/sign_in_google"
                 android:textColor="@color/text_white" />
 
         </LinearLayout>
@@ -167,12 +165,11 @@
                 android:textColor="@color/text_white" />
 
             <TextView
-                android:id="@+id/tv_signup"
+                android:id="@+id/tv_sign_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:onClick="btSignUpClick"
-                android:text="@string/signup"
+                android:text="@string/sign_up"
                 android:textColor="@color/text_white"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -198,11 +195,11 @@
             android:textColor="@color/text_white" />
 
         <TextView
+            android:id="@+id/tvGuest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="@string/guest"
-            android:onClick="btGuestClick"
             android:textColor="@color/text_white"
             android:textStyle="bold" />
     </LinearLayout>

@@ -1,7 +1,5 @@
 package com.fernando.billit.model
 
-import com.google.firebase.database.Exclude
-
 data class UserModel(
     var id: String = ""
 ) {
@@ -10,23 +8,18 @@ data class UserModel(
     var email: String = ""
     var photo: String = ""
 
-    private var _password: String = ""
-    private var _retryPassword: String = ""
+    var password: String = ""
+    var retryPassword: String = ""
 
-    var password: String
-        @Exclude get() {
-            return _password
-        }
-        set(value) {
-            _password = value
-        }
 
-    var retryPassword: String
-        @Exclude get() {
-            return _retryPassword
-        }
-        set(value) {
-            _retryPassword = value
-        }
+    fun convertToHashMap(): HashMap<String, Any> {
+        val hashMap = HashMap<String, Any>()
+        hashMap["id"] = id
+        hashMap["name"] = name
+        hashMap["email"] = email
+        hashMap["photo"] = photo
+
+        return hashMap
+    }
 
 }

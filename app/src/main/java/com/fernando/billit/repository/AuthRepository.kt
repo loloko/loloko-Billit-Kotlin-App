@@ -1,68 +1,98 @@
 package com.fernando.billit.repository
 
+import android.util.Log
 import com.fernando.billit.R
+import com.fernando.billit.extension.TAG
+import com.fernando.billit.extension.codeToBase64
+import com.fernando.billit.model.FriendModel
 import com.fernando.billit.model.UserModel
 import com.fernando.billit.util.AuthResource
 import com.fernando.billit.util.FirebaseConstants
 import com.google.firebase.auth.*
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.*
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
-class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private val databaseRef: DatabaseReference) {
+class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private val database: FirebaseFirestore) {
 
     suspend fun registerUserWithEmail(user: UserModel): AuthResource<UserModel> {
 
-        var result = AuthResource.loading<UserModel>()
+        return try {
+            auth.createUserWithEmailAndPassword(user.email, user.password).await()
 
-        try {
-
-            auth.createUserWithEmailAndPassword(user.email, user.password).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-
-                    result = AuthResource.authenticated(user)
-
-                }
-            }.await()
+            AuthResource.authenticated(user)
 
         } catch (e: FirebaseAuthWeakPasswordException) {
-            result = AuthResource.error(R.string.weak_password)
+            AuthResource.error(R.string.weak_password)
         } catch (e: FirebaseAuthInvalidCredentialsException) {
-            result = AuthResource.error(R.string.invalid_email)
+            AuthResource.error(R.string.invalid_email)
         } catch (e: FirebaseAuthUserCollisionException) {
-            result = AuthResource.error(R.string.user_collision)
+            AuthResource.error(R.string.user_collision)
         } catch (e: Exception) {
-            result = AuthResource.error(R.string.error_user_register)
+            AuthResource.error(R.string.error_user_register)
         }
-
-        return result
     }
 
-    suspend fun insertUserFirebaseDatabase(user: UserModel) {
-        databaseRef.child(FirebaseConstants.USER.USERS).child(user.id).setValue(user).await()
+    suspend fun insertUserFirebaseDatabase(user: UserModel): Boolean {
+
+        return try {
+            database.collection(FirebaseConstants.USER.USERS)
+                .document(user.id)
+                .set(user.convertToHashMap())
+                .await()
+
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     suspend fun sendResetPasswordEmail(email: String): AuthResource<UserModel> {
-        var result = AuthResource.loading<UserModel>()
 
-        try {
-            auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
+        return try {
+            auth.sendPasswordResetEmail(email).await()
 
-                    result = AuthResource.resetPassword()
-                }
-            }.await()
+            AuthResource.resetPassword()
 
         } catch (e: FirebaseAuthInvalidCredentialsException) {
-            result = AuthResource.error(R.string.invalid_email)
+            AuthResource.error(R.string.invalid_email)
         } catch (e: FirebaseAuthInvalidUserException) {
-            result = AuthResource.error(R.string.invalid_email)
+            AuthResource.error(R.string.invalid_email)
         } catch (e: Exception) {
-            result = AuthResource.error(R.string.error_send_email)
+            AuthResource.error(R.string.error_send_email)
         }
-
-        return result
     }
 
+    suspend fun signInWithEmail(email: String, password: String): AuthResource<UserModel> {
+
+        return try {
+            auth.signInWithEmailAndPassword(email, password).await()
+
+            AuthResource.authenticated(UserModel(email.codeToBase64()))
+
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            AuthResource.error(R.string.invalid_credentials)
+        } catch (e: FirebaseAuthInvalidUserException) {
+            AuthResource.error(R.string.invalid_credentials)
+        } catch (e: Exception) {
+            AuthResource.error(R.string.error_sign_in)
+        }
+
+    }
+
+    suspend fun getUserById(id: String): DocumentSnapshot? {
+
+        return try {
+            database.collection(FirebaseConstants.USER.USERS)
+                .document(id)
+                .get()
+                .await()
+
+        } catch (e: Exception) {
+            null
+        }
+    }
 }
