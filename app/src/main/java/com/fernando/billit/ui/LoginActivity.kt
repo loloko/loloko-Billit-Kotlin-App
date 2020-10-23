@@ -3,10 +3,7 @@ package com.fernando.billit.ui
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -14,21 +11,26 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.fernando.billit.R
 import com.fernando.billit.databinding.ActivityLoginBinding
-import com.fernando.billit.extension.TAG
 import com.fernando.billit.extension.createLoadingPopup
 import com.fernando.billit.extension.isNetworkAvailable
 import com.fernando.billit.extension.toastMessage
 import com.fernando.billit.util.AuthResource
 import com.fernando.billit.viewmodel.LoginViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.GoogleAuthProvider
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
 
 class LoginActivity : DaggerAppCompatActivity() {
+    companion object {
+        private const val GOOGLE_SIGN_IN = 1158
+    }
 
     private lateinit var viewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
@@ -38,6 +40,7 @@ class LoginActivity : DaggerAppCompatActivity() {
 
     private lateinit var loadingPopup: Dialog
     private lateinit var mCallbackManager: CallbackManager
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +53,12 @@ class LoginActivity : DaggerAppCompatActivity() {
 
         //Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create()
+        //Google sign in
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
         // Create loading dialog
         loadingPopup = createLoadingPopup()
-
 
         initComponentsActions()
         observers()
@@ -84,12 +90,13 @@ class LoginActivity : DaggerAppCompatActivity() {
         // Button Sign in with Facebook
         binding.btSignInWithFacebook.setOnClickListener {
             if (isNetworkAvailable())
-                facebookLogin()
+                signInWithFacebook()
         }
 
         // Button Sign in with Google
         binding.btSignInWithGoogle.setOnClickListener {
-//            if (isNetworkAvailable())
+            if (isNetworkAvailable())
+                signInWithGoogle()
         }
     }
 
@@ -117,7 +124,7 @@ class LoginActivity : DaggerAppCompatActivity() {
         })
     }
 
-    private fun facebookLogin() {
+    private fun signInWithFacebook() {
 
         val loginManager = LoginManager.getInstance()
 
@@ -126,7 +133,7 @@ class LoginActivity : DaggerAppCompatActivity() {
             override fun onSuccess(loginResult: LoginResult) {
 
                 val credential = FacebookAuthProvider.getCredential(loginResult.accessToken.token)
-                viewModel.signInWithFacebook(credential)
+                viewModel.signInWithCredentials(credential)
             }
 
             override fun onCancel() {
@@ -138,14 +145,33 @@ class LoginActivity : DaggerAppCompatActivity() {
         })
     }
 
+    private fun signInWithGoogle() {
+
+        val signInIntent: Intent = mGoogleSignInClient.signInIntent
+        startActivityForResult(signInIntent, GOOGLE_SIGN_IN)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        if (requestCode == GOOGLE_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)
+                val credential = GoogleAuthProvider.getCredential(account!!.idToken, null)
+
+                viewModel.signInWithCredentials(credential)
+
+            } catch (e: ApiException) {
+                toastMessage(R.string.google_failed, isWarning = true)
+            }
+            return
+        }
 
         // Pass the activity result back to the Facebook SDK
         mCallbackManager.onActivityResult(requestCode, resultCode, data)
     }
-
 
     private fun navToMainScreen() {
         startActivity(Intent(this, MainActivity::class.java))

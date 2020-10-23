@@ -1,15 +1,11 @@
 package com.fernando.billit.repository
 
-import android.util.Log
 import com.fernando.billit.R
-import com.fernando.billit.extension.TAG
 import com.fernando.billit.extension.codeToBase64
-import com.fernando.billit.model.FriendModel
 import com.fernando.billit.model.UserModel
 import com.fernando.billit.util.AuthResource
 import com.fernando.billit.util.FirebaseConstants
 import com.google.firebase.auth.*
-import com.google.firebase.database.*
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -68,7 +64,7 @@ class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private
         } catch (e: FirebaseAuthUserCollisionException) {
             AuthResource.error(R.string.user_collision)
         } catch (e: Exception) {
-            AuthResource.error(R.string.facebook_failed)
+            AuthResource.error(R.string.error_sign_in)
         }
     }
 
