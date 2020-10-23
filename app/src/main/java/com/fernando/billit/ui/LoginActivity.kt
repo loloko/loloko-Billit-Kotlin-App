@@ -3,15 +3,27 @@ package com.fernando.billit.ui
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.fernando.billit.R
 import com.fernando.billit.databinding.ActivityLoginBinding
+import com.fernando.billit.extension.TAG
 import com.fernando.billit.extension.createLoadingPopup
 import com.fernando.billit.extension.isNetworkAvailable
 import com.fernando.billit.extension.toastMessage
 import com.fernando.billit.util.AuthResource
 import com.fernando.billit.viewmodel.LoginViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
@@ -25,6 +37,7 @@ class LoginActivity : DaggerAppCompatActivity() {
     lateinit var providerFactory: ViewModelProviderFactory
 
     private lateinit var loadingPopup: Dialog
+    private lateinit var mCallbackManager: CallbackManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +48,8 @@ class LoginActivity : DaggerAppCompatActivity() {
         // ViewModel
         viewModel = ViewModelProvider(this, providerFactory).get(LoginViewModel::class.java)
 
+        //Initialize Facebook Login button
+        mCallbackManager = CallbackManager.Factory.create()
         // Create loading dialog
         loadingPopup = createLoadingPopup()
 
@@ -68,7 +83,8 @@ class LoginActivity : DaggerAppCompatActivity() {
 
         // Button Sign in with Facebook
         binding.btSignInWithFacebook.setOnClickListener {
-//            if (isNetworkAvailable())
+            if (isNetworkAvailable())
+                facebookLogin()
         }
 
         // Button Sign in with Google
@@ -100,6 +116,36 @@ class LoginActivity : DaggerAppCompatActivity() {
             }
         })
     }
+
+    private fun facebookLogin() {
+
+        val loginManager = LoginManager.getInstance()
+
+        loginManager.logInWithReadPermissions(this, listOf("email", "public_profile"))
+        loginManager.registerCallback(mCallbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(loginResult: LoginResult) {
+
+                val credential = FacebookAuthProvider.getCredential(loginResult.accessToken.token)
+                viewModel.signInWithFacebook(credential)
+            }
+
+            override fun onCancel() {
+            }
+
+            override fun onError(error: FacebookException) {
+                this@LoginActivity.toastMessage(R.string.facebook_failed, isWarning = true)
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+
+        // Pass the activity result back to the Facebook SDK
+        mCallbackManager.onActivityResult(requestCode, resultCode, data)
+    }
+
 
     private fun navToMainScreen() {
         startActivity(Intent(this, MainActivity::class.java))

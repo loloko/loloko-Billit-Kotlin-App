@@ -50,6 +50,28 @@ class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private
         }
     }
 
+    suspend fun signInWithCredentials(credentials: AuthCredential): AuthResource<UserModel> {
+
+        return try {
+            auth.signInWithCredential(credentials).await()
+
+            // Get user from auth session
+            val user = UserModel()
+            user.email = auth.currentUser?.email!!
+            user.name = auth.currentUser?.displayName!!
+            user.id = user.email.codeToBase64()
+
+            AuthResource.authenticated(user)
+
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            AuthResource.error(R.string.invalid_email)
+        } catch (e: FirebaseAuthUserCollisionException) {
+            AuthResource.error(R.string.user_collision)
+        } catch (e: Exception) {
+            AuthResource.error(R.string.facebook_failed)
+        }
+    }
+
     suspend fun sendResetPasswordEmail(email: String): AuthResource<UserModel> {
 
         return try {
