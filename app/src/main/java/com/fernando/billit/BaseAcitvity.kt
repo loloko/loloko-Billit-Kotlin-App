@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.fernando.billit.extension.TAG
-import com.fernando.billit.ui.LoginActivity
+import com.fernando.billit.ui.auth.LoginActivity
 import com.fernando.billit.util.AuthResource.AuthStatus.*
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject

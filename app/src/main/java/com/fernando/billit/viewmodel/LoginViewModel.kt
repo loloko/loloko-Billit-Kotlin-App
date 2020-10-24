@@ -100,4 +100,24 @@ class LoginViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun isUserAlreadySignIn() {
+
+        // Execute in background
+        CoroutineScope(Dispatchers.IO).launch {
+            var user = authRepository.isUserAlreadySignIn()
+
+            // If user exist, fetch info from database
+            if (user != null) {
+                val snapshot = authRepository.getUserById(user.id)
+
+                // If User exist in database, Get it to put in the session
+                if (snapshot != null && snapshot.exists()) {
+                    user = snapshot.toObject(UserModel::class.java)
+
+                    setValueToMainThread(AuthResource.authenticated(user))
+                }
+            }
+        }
+    }
+
 }

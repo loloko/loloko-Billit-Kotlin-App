@@ -1,4 +1,4 @@
-package com.fernando.billit.ui
+package com.fernando.billit.ui.auth
 
 import android.app.Dialog
 import android.content.Intent
@@ -12,8 +12,10 @@ import com.facebook.login.LoginResult
 import com.fernando.billit.R
 import com.fernando.billit.databinding.ActivityLoginBinding
 import com.fernando.billit.extension.createLoadingPopup
+import com.fernando.billit.extension.getPreferenceCurrency
 import com.fernando.billit.extension.isNetworkAvailable
 import com.fernando.billit.extension.toastMessage
+import com.fernando.billit.ui.main.MainActivity
 import com.fernando.billit.util.AuthResource
 import com.fernando.billit.viewmodel.LoginViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
@@ -62,6 +64,13 @@ class LoginActivity : DaggerAppCompatActivity() {
 
         initComponentsActions()
         observers()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        //check if exist a logged user
+        viewModel.isUserAlreadySignIn()
     }
 
     private fun initComponentsActions() {

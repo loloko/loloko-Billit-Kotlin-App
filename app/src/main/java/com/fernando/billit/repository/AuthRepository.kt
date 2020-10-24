@@ -68,6 +68,16 @@ class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private
         }
     }
 
+    fun isUserAlreadySignIn(): UserModel? {
+
+        return if (auth.currentUser != null) {
+            // Get user from auth session and set ID
+            val email = auth.currentUser?.email!!
+            UserModel(email.codeToBase64())
+        } else
+            null
+    }
+
     suspend fun sendResetPasswordEmail(email: String): AuthResource<UserModel> {
 
         return try {
