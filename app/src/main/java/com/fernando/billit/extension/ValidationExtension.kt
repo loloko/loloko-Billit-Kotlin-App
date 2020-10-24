@@ -33,6 +33,17 @@ fun Context.isNetworkAvailable(): Boolean {
     return false
 }
 
+fun EditText.validateEmpty(@StringRes msg: Int): Boolean {
+    return if (text.toString().isEmpty()) {
+        error = resources.getString(R.string.required)
+        hint = resources.getString(msg)
+        setHintTextColor(resources.getColor(R.color.billit_red))
+        true
+    } else {
+        false
+    }
+}
+
 fun View.hideKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)

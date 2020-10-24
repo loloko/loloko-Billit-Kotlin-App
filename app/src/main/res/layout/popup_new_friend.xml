@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_6dp"
+    android:backgroundTint="@color/colorPrimary"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_title_friend_popup"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:text="@string/add_friend_title"
+        android:textAlignment="center"
+        android:textColor="@color/text_white"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/et_name_friend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:autofillHints="@string/name"
+        android:ems="10"
+        android:hint="@string/name"
+        android:inputType="textPersonName"
+        android:maxLength="25" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bt_cancel_friend"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/billit_red"
+            android:text="@android:string/cancel"
+            android:textColor="@color/text_white" />
+
+        <Button
+            android:id="@+id/bt_save_friend"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/billit_blue"
+            android:text="@string/save"
+            android:textAllCaps="false"
+            android:textColor="@color/text_white" />
+    </LinearLayout>
+
+
+</LinearLayout>

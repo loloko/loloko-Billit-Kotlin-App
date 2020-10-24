@@ -1,5 +1,6 @@
 package com.fernando.billit.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -29,5 +30,7 @@ class MainActivity : BaseActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        startActivity(Intent(this, FriendActivity::class.java))
     }
 }
