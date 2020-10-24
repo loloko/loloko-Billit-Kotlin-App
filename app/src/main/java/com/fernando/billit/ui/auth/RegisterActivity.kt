@@ -1,4 +1,4 @@
-package com.fernando.billit.ui
+package com.fernando.billit.ui.auth
 
 import android.app.Dialog
 import android.content.Intent
@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.fernando.billit.databinding.ActivityRegisterBinding
 import com.fernando.billit.extension.createLoadingPopup
 import com.fernando.billit.extension.toastMessage
+import com.fernando.billit.ui.main.MainActivity
 import com.fernando.billit.util.AuthResource.AuthStatus.*
 import com.fernando.billit.viewmodel.RegisterViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory

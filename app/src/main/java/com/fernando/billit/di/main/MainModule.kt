@@ -7,8 +7,4 @@ import dagger.Module
 class MainModule {
 
 
-//    @AuthScope
-//    @Provides
-//    fun provideBookAdapter(requestManager: RequestManager): BookAdapter = BookAdapter(requestManager)
-
 }

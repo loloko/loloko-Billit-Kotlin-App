@@ -7,7 +7,7 @@
     android:background="@color/colorPrimary"
     android:clipToPadding="false"
     android:padding="@dimen/activity_margin"
-    tools:context=".ui.RegisterActivity">
+    tools:context=".ui.auth.RegisterActivity">
 
     <ImageView
         android:id="@+id/imBackPress"

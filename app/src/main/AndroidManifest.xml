@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Billit">
 
-        <!--Facebook init-->
+        <!-- Facebook init -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -35,20 +35,19 @@
 
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
-        </activity>
-        <!--Facebook end-->
+        </activity> <!-- Facebook end -->
 
-        <activity android:name=".ui.LoginActivity">
+
+        <activity android:name=".ui.auth.ForgotPasswordActivity" />
+        <activity android:name=".ui.auth.RegisterActivity" />
+        <activity android:name=".ui.main.MainActivity" />
+        <activity android:name=".ui.auth.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.ForgotPasswordActivity" />
-        <activity android:name=".ui.RegisterActivity" />
-        <activity android:name=".ui.MainActivity" />
     </application>
 
 </manifest>

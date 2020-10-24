@@ -1,4 +1,4 @@
-package com.fernando.billit.ui
+package com.fernando.billit.ui.auth
 
 import android.app.Dialog
 import android.os.Bundle

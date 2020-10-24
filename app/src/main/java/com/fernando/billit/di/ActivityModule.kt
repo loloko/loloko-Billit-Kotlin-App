@@ -4,10 +4,10 @@ import com.fernando.billit.di.auth.AuthModule
 import com.fernando.billit.di.auth.AuthScope
 import com.fernando.billit.di.auth.AuthViewModelModule
 import com.fernando.billit.di.main.*
-import com.fernando.billit.ui.LoginActivity
-import com.fernando.billit.ui.MainActivity
-import com.fernando.billit.ui.RegisterActivity
-import com.fernando.billit.ui.ForgotPasswordActivity
+import com.fernando.billit.ui.auth.LoginActivity
+import com.fernando.billit.ui.auth.RegisterActivity
+import com.fernando.billit.ui.auth.ForgotPasswordActivity
+import com.fernando.billit.ui.main.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
