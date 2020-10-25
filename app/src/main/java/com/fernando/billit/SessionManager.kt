@@ -28,5 +28,12 @@ class SessionManager @Inject constructor() {
         return cachedUser
     }
 
+    // Always will have an user
+    fun getCurrentUser(): UserModel {
+        val user = cachedUser.value?.data
+
+        return user!!
+    }
+
 }
 

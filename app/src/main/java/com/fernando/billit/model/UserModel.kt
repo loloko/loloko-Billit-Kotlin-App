@@ -13,13 +13,12 @@ data class UserModel(
 
 
     fun convertToHashMap(): HashMap<String, Any> {
-        val hashMap = HashMap<String, Any>()
-        hashMap["id"] = id
-        hashMap["name"] = name
-        hashMap["email"] = email
-        hashMap["photo"] = photo
-
-        return hashMap
+        return hashMapOf(
+            "id" to id,
+            "name" to name,
+            "email" to email,
+            "photo" to photo
+        )
     }
 
 }

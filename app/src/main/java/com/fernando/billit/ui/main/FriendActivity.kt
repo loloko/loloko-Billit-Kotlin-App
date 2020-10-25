@@ -5,17 +5,19 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.fernando.billit.BaseActivity
 import com.fernando.billit.R
+import com.fernando.billit.adapter.FriendAdapter
 import com.fernando.billit.databinding.ActivityFriendBinding
-import com.fernando.billit.extension.createLoadingPopup
-import com.fernando.billit.extension.inflate
-import com.fernando.billit.extension.validateEmpty
+import com.fernando.billit.extension.*
 import com.fernando.billit.model.FriendModel
+import com.fernando.billit.util.Resource.Status.*
 import com.fernando.billit.viewmodel.FriendViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
 import java.util.*
@@ -28,6 +30,9 @@ class FriendActivity : BaseActivity() {
 
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
+
+    @Inject
+    lateinit var adapter: FriendAdapter
 
     private lateinit var loadingPopup: Dialog
 
@@ -51,22 +56,52 @@ class FriendActivity : BaseActivity() {
 
         init()
         observers()
+
+        viewModel.getAllFriends()
     }
 
     private fun init() {
+        // Call popup to add new friend
         binding.fabAddFriend.setOnClickListener {
-
+            createNewFriendPopup()
         }
 
-
+        // Init the recycler
+        binding.recyclerFriends.layoutManager = LinearLayoutManager(this)
+        binding.recyclerFriends.adapter = adapter
     }
 
     private fun observers() {
-        viewModel.friendResultObserver().observe(this, { friends ->
-            if (friends != null) {
-               
+        viewModel.friendResultObserver().observe(this, { data ->
+            if (data != null) {
+                when (data.status) {
+                    LOADING -> {
+                        loadingPopup.show()
+                    }
+                    SUCCESS -> {
+                        loadingPopup.dismiss()
+
+                        setFriendsList(data.data)
+                    }
+                    ERROR -> {
+                        toastMessage(data.message, isWarning = true)
+                        loadingPopup.dismiss()
+                    }
+                }
             }
         })
+    }
+
+    //
+    private fun setFriendsList(data: List<FriendModel>?) {
+        // Scroll recycler view to the top
+        binding.recyclerFriends.smoothScrollToPosition(0)
+        // Update adapter
+        adapter.setFriendsList(data)
+
+        // If exist friends, hide message
+        if (data != null && data.isNotEmpty())
+            binding.tvNoFriendFound.visibility = View.GONE
     }
 
     override fun onBackPressed() {
@@ -75,7 +110,7 @@ class FriendActivity : BaseActivity() {
     }
 
     // Show popup to insert or edit a friend
-    private fun createNewFriendPopup(friendModel: FriendModel?) {
+    private fun createNewFriendPopup(friendModel: FriendModel? = null) {
         val dialog: AlertDialog
         val builder = AlertDialog.Builder(this)
         val view: View = inflate(R.layout.popup_new_friend)
@@ -112,6 +147,7 @@ class FriendActivity : BaseActivity() {
                 // Insert into firebase
                 val friend = FriendModel(uuid, mFriendName.text.toString())
 
+                viewModel.addFriend(friend)
 
                 dialog.dismiss()
             }
