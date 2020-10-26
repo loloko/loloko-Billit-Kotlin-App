@@ -1,7 +1,9 @@
 package com.fernando.billit.ui.main
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,6 +80,7 @@ class FriendActivity : BaseActivity() {
                 buffer.add(MyButton(this@FriendActivity, getString(R.string.delete), 40, 0, getColor(R.color.billit_red), object : MyButtonClickListener {
                     override fun onClick(pos: Int) {
 
+                        deleteFriendDialog(adapter.getFriendAtPosition(pos))
 
                     }
                 }))
@@ -86,6 +89,7 @@ class FriendActivity : BaseActivity() {
                 buffer.add(MyButton(this@FriendActivity, getString(R.string.edit), 40, 0, getColor(R.color.billit_blue), object : MyButtonClickListener {
                     override fun onClick(pos: Int) {
 
+                        FriendDialog(adapter.getFriendAtPosition(pos)).show(supportFragmentManager, "FriendDialog")
 
                     }
                 }))
@@ -130,6 +134,22 @@ class FriendActivity : BaseActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+    }
+
+    private fun deleteFriendDialog(friend: FriendModel) {
+        val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
+        builder.setTitle(R.string.attention)
+        builder.setMessage(R.string.delete_firebase)
+        builder.setCancelable(false)
+        builder.setPositiveButton(R.string.cancel) { dialog, _ -> dialog?.dismiss() }
+        builder.setNegativeButton(R.string.delete) { dialog, _ ->
+
+            viewModel.deleteFriend(friend.id)
+
+            dialog.dismiss()
+        }
+
+        builder.create().show()
     }
 
 }

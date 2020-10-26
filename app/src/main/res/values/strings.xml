@@ -96,6 +96,8 @@
     <string name="delete_firebase">Do you want to delete?</string>
     <string name="add_friend_title">Add a new friend</string>
     <string name="done">Done</string>
+    <string name="error_delete_friend">Error in deleting friend, try again</string>
+    <string name="error_add_friend">Error in add/edit friend, try again</string>
     <string name="no_friend_found">No friend found, add friends by pressing the bottom button</string>
 
     //Attach Activity

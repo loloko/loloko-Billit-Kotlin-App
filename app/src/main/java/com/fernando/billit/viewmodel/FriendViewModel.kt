@@ -27,7 +27,6 @@ class FriendViewModel @Inject constructor() : ViewModel() {
 
     fun friendResultObserver(): LiveData<Resource<List<FriendModel>>> = _friendResult
 
-
     fun addFriend(friend: FriendModel) {
 
         if (friend.name.isEmpty()) {
@@ -44,19 +43,12 @@ class FriendViewModel @Inject constructor() : ViewModel() {
             val isInserted = friendRepository.insertFriendDatabase(sessionManager.getCurrentUser().id, friend)
 
             // Fetch as friends
-            if (isInserted) {
-                val query = friendRepository.getAllFriends(sessionManager.getCurrentUser().id)
-
-                if (query != null) {
-                    val list = query.toObjects(FriendModel::class.java)
-
-                    setValueToMainThread(Resource.success(list))
-                }
-            } else
-                setValueToMainThread(Resource.error(R.string.error_sign_in))
+            if (isInserted)
+                getFriends()
+            else
+                setValueToMainThread(Resource.error(R.string.error_add_friend))
         }
     }
-
 
     fun getAllFriends() {
 
@@ -65,16 +57,37 @@ class FriendViewModel @Inject constructor() : ViewModel() {
 
         // Execute in background
         CoroutineScope(Dispatchers.IO).launch {
-            // Insert new friend
-            val query = friendRepository.getAllFriends(sessionManager.getCurrentUser().id)
 
-            if (query != null) {
-                val list = query.toObjects(FriendModel::class.java)
-
-                setValueToMainThread(Resource.success(list))
-            } else
-                setValueToMainThread(Resource.success(null))
+            getFriends()
         }
+    }
+
+    fun deleteFriend(friendId: String) {
+
+        // Display loading message
+        _friendResult.value = Resource.loading()
+
+        // Execute in background
+        CoroutineScope(Dispatchers.IO).launch {
+            // Delete friend
+            val isDeleted = friendRepository.deleteFriend(sessionManager.getCurrentUser().id, friendId)
+
+            if (isDeleted)
+                getFriends()
+            else
+                setValueToMainThread(Resource.error(R.string.error_delete_friend))
+        }
+    }
+
+    private suspend fun getFriends() {
+        val query = friendRepository.getAllFriends(sessionManager.getCurrentUser().id)
+
+        if (query != null) {
+            val list = query.toObjects(FriendModel::class.java)
+
+            setValueToMainThread(Resource.success(list))
+        } else
+            setValueToMainThread(Resource.success(null))
     }
 
     // Set value in the Main Thread

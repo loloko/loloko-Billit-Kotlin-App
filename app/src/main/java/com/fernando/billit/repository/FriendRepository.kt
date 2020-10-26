@@ -40,4 +40,20 @@ class FriendRepository @Inject constructor(private val database: FirebaseFiresto
         }
     }
 
+    suspend fun deleteFriend(userId: String, friendId: String): Boolean {
+
+        return try {
+            database.collection(FirebaseConstants.USER.USERS)
+                .document(userId)
+                .collection(FirebaseConstants.USER.FRIENDS)
+                .document(friendId)
+                .delete()
+                .await()
+
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 }
