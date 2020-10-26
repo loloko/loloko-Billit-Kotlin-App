@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.View
+import android.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -72,8 +73,20 @@ class FriendActivity : BaseActivity() {
         binding.recyclerFriends.layoutManager = LinearLayoutManager(this)
         binding.recyclerFriends.adapter = adapter
 
+        // Listener for searching friend by name
+        binding.searchView.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter.filter(newText)
+                return false
+            }
+        })
+
         // Add swipe for recycler view
-        object : MySwipeHelper(this, recycler_friends, 300) {
+        object : MySwipeHelper(this, recycler_friends, 250) {
             override fun instantiateMyButton(viewHolder: RecyclerView.ViewHolder, buffer: MutableList<MyButton>) {
 
                 //button delete
