@@ -2,22 +2,19 @@ package com.fernando.billit.adapter
 
 import android.content.Context
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
 import com.fernando.billit.R
+import com.fernando.billit.databinding.ItemFriendBinding
 import com.fernando.billit.extension.TAG
-import com.fernando.billit.extension.inflate
 import com.fernando.billit.model.FriendModel
-import kotlinx.android.synthetic.main.item_friend.view.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -29,16 +26,8 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
     private lateinit var context: Context
 
     private val isFriendScreen = true
-    //val mItemClickListener: ItemClickListener? = null
 
     private var mTotalAmount = 0.0
-
-    // Used to filter when search by name
-
-
-    interface ItemClickListener {
-        fun onRecyclerItemClick(position: Int)
-    }
 
     var tracker: SelectionTracker<Long>? = null
 
@@ -47,10 +36,10 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val itemView = parent.inflate(R.layout.item_friend)
+        val binding = ItemFriendBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         context = parent.context
 
-        return MyViewHolder(itemView)
+        return MyViewHolder(binding)
     }
 
     fun setFriendsList(friends: List<FriendModel>?) {
@@ -75,42 +64,13 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
         return friendFilterList.size
     }
 
+    fun getFriendAtPosition(position: Int): FriendModel {
+        return friendFilterList[position]
+    }
+
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        try {
-            holder.apply {
-                //show last row as TOTAL
-                if (!isFriendScreen && friendFilterList.size == position) {
-                    mFriendName.text = ""
-                    mPaid.text = context.getString(R.string.total)
-                    mAmount.text = "%.2f".format(mTotalAmount)
 
-                    return
-                } else
-                    mPaid.text = context.getString(R.string.paid)
-
-                if (position == 0)
-                    mTotalAmount = 0.0
-
-
-                mFriendName.text = friendFilterList[position].name
-
-
-//                tracker?.let {
-//                    itemView.isActivated = it.isSelected(position.toLong())
-//                }
-
-                if (isFriendScreen)
-                    mLayout.isVisible = false
-                else {
-                    mLayout.isVisible = true
-                    mAmount.text = "%.2f".format(friendFilterList[position].amount)
-                    mTotalAmount += friendFilterList[position].amount
-                }
-            }
-
-        } catch (e: Exception) {
-            Log.e(TAG, "onBindViewHolder: ${e.message}")
-        }
+        holder.bind(position)
     }
 
     override fun getItemId(position: Int): Long = position.toLong()
@@ -149,18 +109,45 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
         }
     }
 
-    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class MyViewHolder(private val binding: ItemFriendBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        var mFriendName: TextView = itemView.friend_item_name
-        var mAmount: TextView = itemView.tv_amount
-        var mPaid: TextView = itemView.tv_paid
-        val mLayout: LinearLayout = itemView.layout_amount
+        fun bind(position: Int) {
+            try {
+                binding.apply {
+                    if (!isFriendScreen && friendFilterList.size == position) {
+                        tvFriendName.text = ""
+                        tvPaid.text = context.getString(R.string.total)
+                        tvAmount.text = "%.2f".format(mTotalAmount)
 
-        init {
-//            if (mItemClickListener != null)
-//                itemView.setOnClickListener {
-//                    mItemClickListener.onRecyclerItemClick(adapterPosition)
+                        return
+                    } else
+                        tvPaid.text = context.getString(R.string.paid)
+
+                    if (position == 0)
+                        mTotalAmount = 0.0
+
+
+                    tvFriendName.text = friendFilterList[position].name
+
+
+//                tracker?.let {
+//                    itemView.isActivated = it.isSelected(position.toLong())
 //                }
+
+                    if (isFriendScreen)
+                        layoutAmount.isVisible = false
+                    else {
+                        layoutAmount.isVisible = true
+                        tvAmount.text = "%.2f".format(friendFilterList[position].amount)
+                        mTotalAmount += friendFilterList[position].amount
+                    }
+
+                }
+
+
+            } catch (e: Exception) {
+                Log.e(TAG, "bind: ${e.message}")
+            }
         }
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =

@@ -2,15 +2,12 @@ package com.fernando.billit.viewmodel
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.fernando.billit.R
 import com.fernando.billit.SessionManager
 import com.fernando.billit.model.FriendModel
-import com.fernando.billit.model.UserModel
 import com.fernando.billit.repository.FriendRepository
-import com.fernando.billit.util.AuthResource
 import com.fernando.billit.util.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +27,7 @@ class FriendViewModel @Inject constructor() : ViewModel() {
 
     fun friendResultObserver(): LiveData<Resource<List<FriendModel>>> = _friendResult
 
+
     fun addFriend(friend: FriendModel) {
 
         if (friend.name.isEmpty()) {
@@ -43,19 +41,22 @@ class FriendViewModel @Inject constructor() : ViewModel() {
         // Execute in background
         CoroutineScope(Dispatchers.IO).launch {
             // Insert new friend
-            var isInserted = friendRepository.insertFriendDatabase(sessionManager.getCurrentUser().id, friend)
+            val isInserted = friendRepository.insertFriendDatabase(sessionManager.getCurrentUser().id, friend)
 
             // Fetch as friends
             if (isInserted) {
-                getAllFriends()
+                val query = friendRepository.getAllFriends(sessionManager.getCurrentUser().id)
+
+                if (query != null) {
+                    val list = query.toObjects(FriendModel::class.java)
+
+                    setValueToMainThread(Resource.success(list))
+                }
             } else
                 setValueToMainThread(Resource.error(R.string.error_sign_in))
         }
     }
 
-    private fun geeee() {
-
-    }
 
     fun getAllFriends() {
 
