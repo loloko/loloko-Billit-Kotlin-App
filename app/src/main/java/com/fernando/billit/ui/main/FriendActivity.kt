@@ -1,26 +1,26 @@
 package com.fernando.billit.ui.main
 
-import android.app.AlertDialog
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.fernando.billit.BaseActivity
 import com.fernando.billit.R
 import com.fernando.billit.adapter.FriendAdapter
 import com.fernando.billit.databinding.ActivityFriendBinding
-import com.fernando.billit.extension.*
+import com.fernando.billit.dialog.FriendDialog
+import com.fernando.billit.extension.createLoadingPopup
+import com.fernando.billit.extension.toastMessage
+import com.fernando.billit.helper.MyButton
+import com.fernando.billit.helper.MyButtonClickListener
+import com.fernando.billit.helper.MySwipeHelper
 import com.fernando.billit.model.FriendModel
 import com.fernando.billit.util.Resource.Status.*
 import com.fernando.billit.viewmodel.FriendViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
-import java.util.*
+import kotlinx.android.synthetic.main.activity_friend.*
 import javax.inject.Inject
 
 class FriendActivity : BaseActivity() {
@@ -48,7 +48,6 @@ class FriendActivity : BaseActivity() {
         // Create loading dialog
         loadingPopup = createLoadingPopup()
 
-
         // Toolbar
         binding.toolbar.tbOptions.title = ""
         setSupportActionBar(binding.toolbar.tbOptions)
@@ -57,18 +56,41 @@ class FriendActivity : BaseActivity() {
         init()
         observers()
 
+        // Get all Friend from Firebase
         viewModel.getAllFriends()
     }
 
     private fun init() {
         // Call popup to add new friend
         binding.fabAddFriend.setOnClickListener {
-            createNewFriendPopup()
+            FriendDialog(null).show(supportFragmentManager, "FriendDialog")
         }
 
         // Init the recycler
         binding.recyclerFriends.layoutManager = LinearLayoutManager(this)
         binding.recyclerFriends.adapter = adapter
+
+        // Add swipe for recycler view
+        object : MySwipeHelper(this, recycler_friends, 300) {
+            override fun instantiateMyButton(viewHolder: RecyclerView.ViewHolder, buffer: MutableList<MyButton>) {
+
+                //button delete
+                buffer.add(MyButton(this@FriendActivity, getString(R.string.delete), 40, 0, getColor(R.color.billit_red), object : MyButtonClickListener {
+                    override fun onClick(pos: Int) {
+
+
+                    }
+                }))
+
+                //button edit
+                buffer.add(MyButton(this@FriendActivity, getString(R.string.edit), 40, 0, getColor(R.color.billit_blue), object : MyButtonClickListener {
+                    override fun onClick(pos: Int) {
+
+
+                    }
+                }))
+            }
+        }
     }
 
     private fun observers() {
@@ -76,7 +98,8 @@ class FriendActivity : BaseActivity() {
             if (data != null) {
                 when (data.status) {
                     LOADING -> {
-                        loadingPopup.show()
+                        if (!loadingPopup.isShowing)
+                            loadingPopup.show()
                     }
                     SUCCESS -> {
                         loadingPopup.dismiss()
@@ -109,49 +132,7 @@ class FriendActivity : BaseActivity() {
         finish()
     }
 
-    // Show popup to insert or edit a friend
-    private fun createNewFriendPopup(friendModel: FriendModel? = null) {
-        val dialog: AlertDialog
-        val builder = AlertDialog.Builder(this)
-        val view: View = inflate(R.layout.popup_new_friend)
-
-        builder.setView(view)
-        builder.setCancelable(false)
-        dialog = builder.create()
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        dialog.show()
-
-        val mFriendName = view.findViewById<EditText>(R.id.et_name_friend)
-
-        friendModel?.let {
-            mFriendName.setText(it.name)
-        }
-
-        // Button cancel action click
-        val btCancel = view.findViewById<Button>(R.id.bt_cancel_friend)
-        btCancel.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        // Button save action click
-        val btSave = view.findViewById<Button>(R.id.bt_save_friend)
-        btSave.setOnClickListener {
-
-            // Validation
-            if (!mFriendName.validateEmpty(R.string.required_name)) {
-
-                // Set a new UUID if it is a new friend
-                val uuid = friendModel?.id ?: UUID.randomUUID().toString()
-
-                // Insert into firebase
-                val friend = FriendModel(uuid, mFriendName.text.toString())
-
-                viewModel.addFriend(friend)
-
-                dialog.dismiss()
-            }
-        }
-    }
-
 }
+
+
+
