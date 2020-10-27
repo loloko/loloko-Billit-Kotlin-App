@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.fernando.billit.model.UserModel
 import com.fernando.billit.util.AuthResource
 import com.fernando.billit.util.TestCoroutineRule
-import com.fernando.billit.viewmodel.RegisterViewModel
+import com.fernando.billit.viewmodel.LoginViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
@@ -20,7 +20,7 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
-class RegisterTest {
+class LoginTest {
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -32,7 +32,7 @@ class RegisterTest {
     private lateinit var usersObserver: Observer<AuthResource<UserModel>>
 
     @InjectMocks
-    lateinit var viewModel: RegisterViewModel
+    lateinit var viewModel: LoginViewModel
 
     @InjectMocks
     lateinit var sessionManager: SessionManager
@@ -41,7 +41,6 @@ class RegisterTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-
     }
 
 
@@ -53,24 +52,10 @@ class RegisterTest {
     }
 
     @Test
-    fun test_name_is_empty() {
-        testCoroutineRule.runBlockingTest {
-
-            viewModel.registerUser()
-
-            verify(usersObserver).onChanged(AuthResource.error(R.string.required_name))
-        }
-    }
-
-    @Test
     fun test_email_is_empty() {
         testCoroutineRule.runBlockingTest {
 
-            viewModel.user.apply {
-                name = "Name Test"
-            }
-
-            viewModel.registerUser()
+            viewModel.signInWithEmail("", "password")
 
             verify(usersObserver).onChanged(AuthResource.error(R.string.required_email))
         }
@@ -80,47 +65,9 @@ class RegisterTest {
     fun test_password_is_empty() {
         testCoroutineRule.runBlockingTest {
 
-            viewModel.user.apply {
-                name = "Name Test"
-                email = "email@gmail.com"
-            }
-
-            viewModel.registerUser()
+            viewModel.signInWithEmail("email@gmail.com", "")
 
             verify(usersObserver).onChanged(AuthResource.error(R.string.required_password))
-        }
-    }
-
-    @Test
-    fun test_confirm_password_is_empty() {
-        testCoroutineRule.runBlockingTest {
-
-            viewModel.user.apply {
-                name = "Name Test"
-                email = "email@gmail.com"
-                password = "1234"
-            }
-
-            viewModel.registerUser()
-
-            verify(usersObserver).onChanged(AuthResource.error(R.string.required_confirm_password))
-        }
-    }
-
-    @Test
-    fun test_passwords_not_match() {
-        testCoroutineRule.runBlockingTest {
-
-            viewModel.user.apply {
-                name = "Name Test"
-                email = "email@gmail.com"
-                password = "1234"
-                retryPassword = "4321"
-            }
-
-            viewModel.registerUser()
-
-            verify(usersObserver).onChanged(AuthResource.error(R.string.password_not_match))
         }
     }
 
@@ -128,5 +75,4 @@ class RegisterTest {
     fun tearDown() {
         // do something if required
     }
-
 }
