@@ -1,7 +1,6 @@
 package com.fernando.billit.dialog
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +8,11 @@ import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.fernando.billit.R
-import com.fernando.billit.extension.TAG
 import com.fernando.billit.extension.validateEmpty
 import com.fernando.billit.model.FriendModel
 import com.fernando.billit.viewmodel.FriendViewModel
 import kotlinx.android.synthetic.main.popup_new_friend.view.*
 import java.util.*
-import kotlin.math.log
 
 class FriendDialog(private var friend: FriendModel?) : DialogFragment() {
 
@@ -37,11 +34,6 @@ class FriendDialog(private var friend: FriendModel?) : DialogFragment() {
         setupClickListeners(view)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.e(TAG, "onDestroy: *************", )
-    }
-
     private fun setupView(view: View) {
 
         if (friend == null)
@@ -50,7 +42,6 @@ class FriendDialog(private var friend: FriendModel?) : DialogFragment() {
             // Edit friend
             view.et_name_friend.setText(friend?.name)
         }
-
     }
 
     private fun setupClickListeners(view: View) {

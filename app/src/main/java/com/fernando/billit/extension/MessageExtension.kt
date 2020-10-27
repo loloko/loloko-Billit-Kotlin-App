@@ -13,11 +13,7 @@ import androidx.annotation.StringRes
 import com.fernando.billit.R
 import kotlin.math.roundToInt
 
-fun Context.toastMessage(
-    @StringRes stringRef: Int? = null,
-    text: String? = null,
-    isWarning: Boolean = false
-) {
+fun Context.toastMessage(@StringRes stringRef: Int? = null, text: String? = null, isWarning: Boolean = false) {
 
     val toast = Toast(this)
     val view = inflate(R.layout.toast_custom)

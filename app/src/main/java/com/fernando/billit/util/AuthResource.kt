@@ -2,7 +2,7 @@ package com.fernando.billit.util
 
 import androidx.annotation.StringRes
 
-class AuthResource<T>(val status: AuthStatus, val data: T?, val message: Int?) {
+ class AuthResource<T>(val status: AuthStatus, val data: T?, val message: Int?) {
     enum class AuthStatus {
         AUTHENTICATED, ERROR, LOADING, NOT_AUTHENTICATED, RESET_PASSWORD
     }

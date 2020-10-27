@@ -1,6 +1,5 @@
 package com.fernando.billit.viewmodel
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,7 +29,7 @@ class FriendViewModel @Inject constructor() : ViewModel() {
     fun addFriend(friend: FriendModel) {
 
         if (friend.name.isEmpty()) {
-            setError(R.string.required_name)
+            _friendResult.value = Resource.error(R.string.required_name)
             return
         }
 
@@ -95,10 +94,6 @@ class FriendViewModel @Inject constructor() : ViewModel() {
         withContext(Dispatchers.Main) {
             _friendResult.value = value
         }
-    }
-
-    private fun setError(@StringRes string: Int) {
-        _friendResult.value = Resource.error(string)
     }
 
 }
