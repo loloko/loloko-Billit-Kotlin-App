@@ -20,7 +20,7 @@ import com.fernando.billit.helper.MyButton
 import com.fernando.billit.helper.MyButtonClickListener
 import com.fernando.billit.helper.MySwipeHelper
 import com.fernando.billit.model.FriendModel
-import com.fernando.billit.util.Resource.Status.*
+import com.fernando.billit.util.ResultResource.*
 import com.fernando.billit.viewmodel.FriendViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
 import kotlinx.android.synthetic.main.activity_friend.*
@@ -113,18 +113,18 @@ class FriendActivity : BaseActivity() {
     private fun observers() {
         viewModel.friendResultObserver().observe(this, { data ->
             if (data != null) {
-                when (data.status) {
-                    LOADING -> {
+                when (data) {
+                    is Loading -> {
                         if (!loadingPopup.isShowing)
                             loadingPopup.show()
                     }
-                    SUCCESS -> {
+                    is Success -> {
                         loadingPopup.dismiss()
 
                         setFriendsList(data.data)
                     }
-                    ERROR -> {
-                        toastMessage(data.message, isWarning = true)
+                    is Error -> {
+                        toastMessage(data.msg, isWarning = true)
                         loadingPopup.dismiss()
                     }
                 }

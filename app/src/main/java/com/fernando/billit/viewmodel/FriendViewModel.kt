@@ -7,7 +7,7 @@ import com.fernando.billit.R
 import com.fernando.billit.SessionManager
 import com.fernando.billit.model.FriendModel
 import com.fernando.billit.repository.FriendRepository
-import com.fernando.billit.util.Resource
+import com.fernando.billit.util.ResultResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,19 +22,19 @@ class FriendViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var sessionManager: SessionManager
 
-    private var _friendResult = MutableLiveData<Resource<List<FriendModel>>>()
+    private var _friendResult = MutableLiveData<ResultResource<List<FriendModel>>>()
 
-    fun friendResultObserver(): LiveData<Resource<List<FriendModel>>> = _friendResult
+    fun friendResultObserver(): LiveData<ResultResource<List<FriendModel>>> = _friendResult
 
     fun addFriend(friend: FriendModel) {
 
         if (friend.name.isEmpty()) {
-            _friendResult.value = Resource.error(R.string.required_name)
+            _friendResult.value = ResultResource.Error(R.string.required_name)
             return
         }
 
         // Display loading message
-        _friendResult.value = Resource.loading()
+        _friendResult.value = ResultResource.Loading
 
         // Execute in background
         CoroutineScope(Dispatchers.IO).launch {
@@ -45,14 +45,14 @@ class FriendViewModel @Inject constructor() : ViewModel() {
             if (isInserted)
                 getFriends()
             else
-                setValueToMainThread(Resource.error(R.string.error_add_friend))
+                setValueToMainThread(ResultResource.Error(R.string.error_add_friend))
         }
     }
 
     fun getAllFriends() {
 
         // Display loading message
-        _friendResult.value = Resource.loading()
+        _friendResult.value = ResultResource.Loading
 
         // Execute in background
         CoroutineScope(Dispatchers.IO).launch {
@@ -64,7 +64,7 @@ class FriendViewModel @Inject constructor() : ViewModel() {
     fun deleteFriend(friendId: String) {
 
         // Display loading message
-        _friendResult.value = Resource.loading()
+        _friendResult.value = ResultResource.Loading
 
         // Execute in background
         CoroutineScope(Dispatchers.IO).launch {
@@ -74,7 +74,7 @@ class FriendViewModel @Inject constructor() : ViewModel() {
             if (isDeleted)
                 getFriends()
             else
-                setValueToMainThread(Resource.error(R.string.error_delete_friend))
+                setValueToMainThread(ResultResource.Error(R.string.error_delete_friend))
         }
     }
 
@@ -84,13 +84,13 @@ class FriendViewModel @Inject constructor() : ViewModel() {
         if (query != null) {
             val list = query.toObjects(FriendModel::class.java)
 
-            setValueToMainThread(Resource.success(list))
+            setValueToMainThread(ResultResource.Success(list))
         } else
-            setValueToMainThread(Resource.success(null))
+            setValueToMainThread(ResultResource.Success(null))
     }
 
     // Set value in the Main Thread
-    private suspend fun setValueToMainThread(value: Resource<List<FriendModel>>) {
+    private suspend fun setValueToMainThread(value: ResultResource<List<FriendModel>>) {
         withContext(Dispatchers.Main) {
             _friendResult.value = value
         }

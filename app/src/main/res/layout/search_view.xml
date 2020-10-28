@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SearchView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/search_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
-    android:closeIcon="@drawable/ic_close"
-    android:elevation="5dp"
-    android:iconifiedByDefault="false"
-    android:queryHint="@string/search"
-    android:searchIcon="@drawable/ic_search" />
+<merge>
+
+    <SearchView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:closeIcon="@drawable/ic_close"
+        android:elevation="5dp"
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/search"
+        android:searchIcon="@drawable/ic_search" />
+
+</merge>
