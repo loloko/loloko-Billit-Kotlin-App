@@ -26,21 +26,21 @@ class TestCaseLogin {
     }
 
     @Test
-    fun checkIfIsLoginScreen() {
+    fun test1_checkIfIsLoginScreen() {
         RobotLogin()
             .verifyScreenSignIn()
             .verifyBtSignIn()
     }
 
     @Test
-    fun checkRequiredEmailMessage() {
+    fun test2_checkRequiredEmailMessage() {
         RobotLogin()
             .clickBtSignIn()
             .checkMessageEmail()
     }
 
     @Test
-    fun checkRequiredPasswordMessage() {
+    fun test3_checkRequiredPasswordMessage() {
         RobotLogin()
             .typeEmail()
             .clickBtSignIn()
@@ -48,7 +48,7 @@ class TestCaseLogin {
     }
 
     @Test
-    fun checkInvalidCredentialsMessage() {
+    fun test4_checkInvalidCredentialsMessage() {
         RobotLogin()
             .typeWrongEmail()
             .typePassword()
@@ -68,7 +68,7 @@ class TestCaseLogin {
 //    }
 
     @Test
-    fun checkScreenForgotPassword() {
+    fun test5_checkScreenForgotPassword() {
         RobotLogin()
             .clickBtForgotPassword()
             .verifyScreenResetPassword()
@@ -77,7 +77,7 @@ class TestCaseLogin {
     }
 
     @Test
-    fun checkScreenRegisterUser() {
+    fun test6_checkScreenRegisterUser() {
         RobotLogin()
             .clickBtRegister()
             .verifyScreenRegister()
