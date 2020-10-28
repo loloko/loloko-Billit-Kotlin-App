@@ -1,8 +1,8 @@
 package com.fernando.billit.screen.login
 
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.rule.ActivityTestRule
 import com.fernando.billit.ui.auth.LoginActivity
 import org.junit.After
 import org.junit.Before
@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 class TestCaseLogin {
 
     @get:Rule
-    var activityRule = ActivityTestRule(LoginActivity::class.java)
+    var activityRule = ActivityScenarioRule(LoginActivity::class.java)
 
     @Before
     fun setup() {

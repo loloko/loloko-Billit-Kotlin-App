@@ -1,6 +1,5 @@
 package com.fernando.billit.screen.login
 
-import androidx.test.espresso.Espresso
 import com.fernando.billit.R
 import com.fernando.billit.common.ScreenRobot
 
@@ -12,8 +11,6 @@ class RobotLogin : ScreenRobot<RobotLogin>() {
         private const val BT_LOGIN: Int = R.id.bt_sign_in_with_email
         private const val BT_FORGOT_PASSWORD: Int = R.id.tv_forgot_password
         private const val BT_REGISTER: Int = R.id.tv_sign_up
-        private const val TOOLBAR: Int = R.id.toolbar
-
 
         private const val LOGIN_EMAIL = "fer@gmail.com"
         private const val LOGIN_PASSWORD = "123456"
@@ -85,15 +82,5 @@ class RobotLogin : ScreenRobot<RobotLogin>() {
         return this
     }
 
-    // the view is full screen
-    fun pressBackButton(): RobotLogin {
-        Espresso.pressBack()
-        return this
-    }
-
-    fun checkIfTrackScreenIsDisplayed(): RobotLogin {
-        checkIsDisplayed(TOOLBAR)
-        return this
-    }
 }
 
