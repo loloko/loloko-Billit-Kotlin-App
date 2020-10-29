@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Billit">
-
+        <activity android:name=".ui.main.BillDetailsActivity"></activity>
         <!-- Facebook init -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -35,10 +35,7 @@
 
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
-        </activity>
-        <!-- Facebook end -->
-
-
+        </activity> <!-- Facebook end -->
         <activity android:name=".ui.auth.ForgotPasswordActivity" />
         <activity android:name=".ui.auth.RegisterActivity" />
         <activity android:name=".ui.main.MainActivity" />

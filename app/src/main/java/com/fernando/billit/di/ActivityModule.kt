@@ -10,6 +10,7 @@ import com.fernando.billit.di.main.MainViewModelModule
 import com.fernando.billit.ui.auth.ForgotPasswordActivity
 import com.fernando.billit.ui.auth.LoginActivity
 import com.fernando.billit.ui.auth.RegisterActivity
+import com.fernando.billit.ui.main.BillDetailsActivity
 import com.fernando.billit.ui.main.FriendActivity
 import com.fernando.billit.ui.main.MainActivity
 import dagger.Module
@@ -39,5 +40,8 @@ abstract class ActivityModule {
     @ContributesAndroidInjector(modules = [MainViewModelModule::class, MainModule::class])
     abstract fun contributeFriendActivity(): FriendActivity
 
+    @MainScope
+    @ContributesAndroidInjector(modules = [MainViewModelModule::class, MainModule::class])
+    abstract fun contributeBillDetailsActivity(): BillDetailsActivity
 
 }
