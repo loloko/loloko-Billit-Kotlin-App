@@ -6,17 +6,109 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.BillFragment">
 
-    <TextView
-        android:id="@+id/text_dashboard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <include
+        android:id="@+id/search_view"
+        layout="@layout/search_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_no_bills_found"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_bill_found"
+        android:textAlignment="center"
+        android:textColor="@color/text_white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_view" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_bill"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_no_bills_found" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_rounded_6dp"
+        android:backgroundTint="@android:color/black"
+        android:paddingStart="6dp"
+        android:paddingTop="3dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="3dp"
+        android:text="@string/new_bill"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/fab_new_bill"
+        app:layout_constraintEnd_toStartOf="@+id/fab_new_bill"
+        app:layout_constraintTop_toTopOf="@+id/fab_new_bill" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_new_bill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/bills"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@id/fab_share_code"
+        app:layout_constraintEnd_toEndOf="@+id/fab_share_code"
+        app:layout_constraintStart_toStartOf="@+id/fab_share_code"
+        app:srcCompat="@drawable/ic_add" />
+
+    <TextView
+        android:id="@+id/tv_share_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_rounded_6dp"
+        android:backgroundTint="@android:color/black"
+        android:paddingStart="6dp"
+        android:paddingTop="3dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="3dp"
+        android:text="@string/add_share_code"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/fab_share_code"
+        app:layout_constraintEnd_toStartOf="@+id/fab_share_code"
+        app:layout_constraintTop_toTopOf="@+id/fab_share_code" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_share_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        app:fabSize="mini"
+        android:contentDescription="@string/share_code"
+        app:layout_constraintBottom_toTopOf="@id/fab_plus"
+        app:layout_constraintEnd_toEndOf="@+id/fab_plus"
+        app:layout_constraintStart_toStartOf="@+id/fab_plus"
+        app:srcCompat="@drawable/ic_share" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/bills"
+        android:backgroundTint="@color/billit_blue"
+        android:clickable="true"
+        android:src="@drawable/ic_add"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="@android:color/white" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

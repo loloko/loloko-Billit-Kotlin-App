@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
+    id("scabbard.gradle") version "0.4.0"
 }
 
 android {
@@ -33,6 +34,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    // Used to show the Dagger components tree
+    //scabbard {
+    //enabled = true
+    //}
 
 //    externalNativeBuild {
 //        cmake {

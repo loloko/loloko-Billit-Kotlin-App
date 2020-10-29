@@ -35,7 +35,8 @@
 
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
-        </activity> <!-- Facebook end -->
+        </activity>
+        <!-- Facebook end -->
 
 
         <activity android:name=".ui.auth.ForgotPasswordActivity" />

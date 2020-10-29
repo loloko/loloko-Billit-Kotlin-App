@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -12,7 +13,6 @@ import com.facebook.login.LoginResult
 import com.fernando.billit.R
 import com.fernando.billit.databinding.ActivityLoginBinding
 import com.fernando.billit.extension.createLoadingPopup
-import com.fernando.billit.extension.getPreferenceCurrency
 import com.fernando.billit.extension.isNetworkAvailable
 import com.fernando.billit.extension.toastMessage
 import com.fernando.billit.ui.main.MainActivity
@@ -110,27 +110,25 @@ class LoginActivity : DaggerAppCompatActivity() {
     }
 
     private fun observers() {
-        viewModel.userResultObserver().observe(this, { user ->
-            if (user != null) {
-                when (user.status) {
-                    AuthResource.AuthStatus.LOADING -> {
-                        loadingPopup.show()
-                    }
-                    AuthResource.AuthStatus.AUTHENTICATED -> {
-                        loadingPopup.dismiss()
-                        navToMainScreen()
-                    }
-                    AuthResource.AuthStatus.ERROR -> {
-                        toastMessage(user.message, isWarning = true)
-                        loadingPopup.dismiss()
-                    }
-                    AuthResource.AuthStatus.NOT_AUTHENTICATED -> {
-                        loadingPopup.dismiss()
-                    }
-                    else -> loadingPopup.dismiss()
+        viewModel.userResultObserver().observe(this) { user ->
+            when (user.status) {
+                AuthResource.AuthStatus.LOADING -> {
+                    loadingPopup.show()
                 }
+                AuthResource.AuthStatus.AUTHENTICATED -> {
+                    loadingPopup.dismiss()
+                    navToMainScreen()
+                }
+                AuthResource.AuthStatus.ERROR -> {
+                    toastMessage(user.message, isWarning = true)
+                    loadingPopup.dismiss()
+                }
+                AuthResource.AuthStatus.NOT_AUTHENTICATED -> {
+                    loadingPopup.dismiss()
+                }
+                else -> loadingPopup.dismiss()
             }
-        })
+        }
     }
 
     private fun signInWithFacebook() {

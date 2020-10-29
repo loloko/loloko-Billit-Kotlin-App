@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.fernando.billit.databinding.ActivityRegisterBinding
 import com.fernando.billit.extension.createLoadingPopup
 import com.fernando.billit.extension.toastMessage
@@ -60,27 +61,25 @@ class RegisterActivity : DaggerAppCompatActivity() {
     }
 
     private fun observers() {
-        viewModel.userResultObserver().observe(this, { user ->
-            if (user != null) {
-                when (user.status) {
-                    LOADING -> {
-                        loadingPopup.show()
-                    }
-                    AUTHENTICATED -> {
-                        loadingPopup.dismiss()
-                        navToMainScreen()
-                    }
-                    ERROR -> {
-                        toastMessage(user.message, isWarning = true)
-                        loadingPopup.dismiss()
-                    }
-                    NOT_AUTHENTICATED -> {
-                        loadingPopup.dismiss()
-                    }
-                    else -> loadingPopup.dismiss()
+        viewModel.userResultObserver().observe(this) { user ->
+            when (user.status) {
+                LOADING -> {
+                    loadingPopup.show()
                 }
+                AUTHENTICATED -> {
+                    loadingPopup.dismiss()
+                    navToMainScreen()
+                }
+                ERROR -> {
+                    toastMessage(user.message, isWarning = true)
+                    loadingPopup.dismiss()
+                }
+                NOT_AUTHENTICATED -> {
+                    loadingPopup.dismiss()
+                }
+                else -> loadingPopup.dismiss()
             }
-        })
+        }
     }
 
     override fun onBackPressed() {
