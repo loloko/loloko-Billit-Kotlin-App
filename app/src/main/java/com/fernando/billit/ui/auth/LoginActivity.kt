@@ -41,8 +41,16 @@ class LoginActivity : DaggerAppCompatActivity() {
     lateinit var providerFactory: ViewModelProviderFactory
 
     private lateinit var loadingPopup: Dialog
-    private lateinit var mCallbackManager: CallbackManager
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    // Facebook sign in
+    private val mCallbackManager by lazy {
+        CallbackManager.Factory.create()
+    }
+    // Google sign in
+    private val mGoogleSignInClient by lazy {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
+        GoogleSignIn.getClient(this, gso)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,17 +61,11 @@ class LoginActivity : DaggerAppCompatActivity() {
         // ViewModel
         viewModel = ViewModelProvider(this, providerFactory).get(LoginViewModel::class.java)
 
-        //Initialize Facebook Login button
-        mCallbackManager = CallbackManager.Factory.create()
-        //Google sign in
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-
         // Create loading dialog
         loadingPopup = createLoadingPopup()
 
-        initComponentsActions()
-        observers()
+        componentsActionsInit()
+        subscribeObservers()
     }
 
     override fun onStart() {
@@ -73,7 +75,7 @@ class LoginActivity : DaggerAppCompatActivity() {
         viewModel.isUserAlreadySignIn()
     }
 
-    private fun initComponentsActions() {
+    private fun componentsActionsInit() {
         // Close App
         binding.imClose.setOnClickListener {
             finish()
@@ -109,7 +111,7 @@ class LoginActivity : DaggerAppCompatActivity() {
         }
     }
 
-    private fun observers() {
+    private fun subscribeObservers() {
         viewModel.userResultObserver().observe(this) { user ->
             when (user.status) {
                 AuthResource.AuthStatus.LOADING -> {

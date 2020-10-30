@@ -1,12 +1,12 @@
 package com.fernando.billit.ui.auth
 
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import com.fernando.billit.databinding.ActivityRegisterBinding
 import com.fernando.billit.extension.createLoadingPopup
+import com.fernando.billit.extension.isNetworkAvailable
 import com.fernando.billit.extension.toastMessage
 import com.fernando.billit.ui.main.MainActivity
 import com.fernando.billit.util.AuthResource.AuthStatus.*
@@ -23,7 +23,9 @@ class RegisterActivity : DaggerAppCompatActivity() {
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
 
-    private lateinit var loadingPopup: Dialog
+    private val loadingPopup by lazy {
+        createLoadingPopup()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +36,11 @@ class RegisterActivity : DaggerAppCompatActivity() {
         // ViewModel
         viewModel = ViewModelProvider(this, providerFactory).get(RegisterViewModel::class.java)
 
-        // Create loading dialog
-        loadingPopup = createLoadingPopup()
-
-        init()
-        observers()
+        variablesInit()
+        subscribeObservers()
     }
 
-    private fun init() {
+    private fun variablesInit() {
         binding.imBackPress.setOnClickListener {
             navToLoginScreen()
         }
@@ -56,11 +55,12 @@ class RegisterActivity : DaggerAppCompatActivity() {
                 retryPassword = binding.etConfirmPassword.text.toString()
             }
 
-            viewModel.registerUser()
+            if (isNetworkAvailable())
+                viewModel.registerUser()
         }
     }
 
-    private fun observers() {
+    private fun subscribeObservers() {
         viewModel.userResultObserver().observe(this) { user ->
             when (user.status) {
                 LOADING -> {
