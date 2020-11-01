@@ -130,9 +130,9 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
                     tvFriendName.text = friendFilterList[position].name
 
 
-//                tracker?.let {
-//                    itemView.isActivated = it.isSelected(position.toLong())
-//                }
+                    tracker?.let {
+                        itemView.isActivated = it.isSelected(position.toLong())
+                    }
 
                     if (isFriendScreen)
                         layoutAmount.isVisible = false

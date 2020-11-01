@@ -1,25 +1,31 @@
 package com.fernando.billit.ui.main
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
+import androidx.recyclerview.selection.SelectionPredicates
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fernando.billit.BaseActivity
 import com.fernando.billit.R
 import com.fernando.billit.adapter.FriendAdapter
+import com.fernando.billit.adapter.MyItemDetailsLookup
 import com.fernando.billit.databinding.ActivityFriendBinding
 import com.fernando.billit.dialog.FriendDialog
 import com.fernando.billit.extension.createLoadingPopup
 import com.fernando.billit.extension.toastMessage
 import com.fernando.billit.helper.MyButton
 import com.fernando.billit.helper.MyButtonClickListener
+import com.fernando.billit.helper.MyItemKeyProvider
 import com.fernando.billit.helper.MySwipeHelper
 import com.fernando.billit.model.FriendModel
+import com.fernando.billit.util.MarginItemDecoration
 import com.fernando.billit.util.ResultResource.*
 import com.fernando.billit.viewmodel.FriendViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
@@ -37,7 +43,12 @@ class FriendActivity : BaseActivity() {
     @Inject
     lateinit var adapter: FriendAdapter
 
-    private lateinit var loadingPopup: Dialog
+    // Use to select the friends by rows
+    private var tracker: SelectionTracker<Long>? = null
+
+    private val loadingPopup by lazy {
+        createLoadingPopup()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,22 +59,19 @@ class FriendActivity : BaseActivity() {
         // ViewModel
         viewModel = ViewModelProvider(this, providerFactory).get(FriendViewModel::class.java)
 
-        // Create loading dialog
-        loadingPopup = createLoadingPopup()
-
         // Toolbar
         binding.toolbar.tbOptions.title = ""
         setSupportActionBar(binding.toolbar.tbOptions)
         binding.toolbar.toolbarTitle.setText(R.string.friends)
 
-        init()
-        observers()
+        initVariables()
+        subscribeObservers()
 
         // Get all Friend from Firebase
         viewModel.getAllFriends()
     }
 
-    private fun init() {
+    private fun initVariables() {
         // Call popup to add new friend
         binding.fabAddFriend.setOnClickListener {
             FriendDialog(null).show(supportFragmentManager, "FriendDialog")
@@ -71,9 +79,20 @@ class FriendActivity : BaseActivity() {
 
         // Init the recycler
         binding.recyclerFriends.layoutManager = LinearLayoutManager(this)
+        binding.recyclerFriends.addItemDecoration(MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.recycler)))
         binding.recyclerFriends.adapter = adapter
 
-        // Listener for searching friend by name
+        // For recycler selection friend row
+        tracker = SelectionTracker.Builder<Long>(
+            "mySelection",
+            binding.recyclerFriends,
+            MyItemKeyProvider(binding.recyclerFriends),
+            MyItemDetailsLookup(binding.recyclerFriends),
+            StorageStrategy.createLongStorage()
+        ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
+        adapter.tracker = tracker
+
+        // Listener for searching friend by name (Searching View)
         binding.searchView.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -85,7 +104,7 @@ class FriendActivity : BaseActivity() {
             }
         })
 
-        // Add swipe for recycler view
+        // Add swipe for recycler view (Edit and Delete)
         object : MySwipeHelper(this, recycler_friends, 250) {
             override fun instantiateMyButton(viewHolder: RecyclerView.ViewHolder, buffer: MutableList<MyButton>) {
 
@@ -110,26 +129,24 @@ class FriendActivity : BaseActivity() {
         }
     }
 
-    private fun observers() {
-        viewModel.friendResultObserver().observe(this, { data ->
-            if (data != null) {
-                when (data) {
-                    is Loading -> {
-                        if (!loadingPopup.isShowing)
-                            loadingPopup.show()
-                    }
-                    is Success -> {
-                        loadingPopup.dismiss()
+    private fun subscribeObservers() {
+        viewModel.friendResultObserver().observe(this) { data ->
+            when (data) {
+                is Loading -> {
+                    if (!loadingPopup.isShowing)
+                        loadingPopup.show()
+                }
+                is Success -> {
+                    loadingPopup.dismiss()
 
-                        setFriendsList(data.data)
-                    }
-                    is Error -> {
-                        toastMessage(data.msg, isWarning = true)
-                        loadingPopup.dismiss()
-                    }
+                    setFriendsList(data.data)
+                }
+                is Error -> {
+                    toastMessage(data.msg, isWarning = true)
+                    loadingPopup.dismiss()
                 }
             }
-        })
+        }
     }
 
     //
