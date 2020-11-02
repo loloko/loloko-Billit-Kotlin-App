@@ -25,6 +25,8 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
     private var friendFilterList: MutableList<FriendModel> = ArrayList()
     private lateinit var context: Context
 
+    var friendListFromBill: List<FriendModel>? = null
+
     private val isFriendScreen = true
 
     private var mTotalAmount = 0.0
@@ -46,9 +48,20 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
         friendList.clear()
         friendFilterList.clear()
 
-        if (friends != null)
-            friendList.addAll(friends)
+        friends?.forEachIndexed { index, friend ->
 
+            // Will occurs when friend List is sent from BillDetailsActivity to FriendActivity, just to keep the friend info (amount paid)
+            // and after send back to BillDetailsActivity
+            // + It will keep the friend selected when was in the previus screen
+            if (friendListFromBill != null)
+                for (fm in friendListFromBill!!.filter { it.id == friend.id }) {
+                    tracker?.select(index.toLong())
+                    friend.amount = fm.amount
+                    friend.hasChanged = fm.hasChanged
+                }
+
+            friendList.add(friend)
+        }
         friendFilterList.addAll(friendList)
 
         notifyDataSetChanged()

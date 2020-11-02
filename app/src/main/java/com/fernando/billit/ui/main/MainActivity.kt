@@ -31,6 +31,6 @@ class MainActivity : BaseActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        startActivity(Intent(this, FriendActivity::class.java))
+        startActivity(Intent(this, BillDetailsActivity::class.java))
     }
 }

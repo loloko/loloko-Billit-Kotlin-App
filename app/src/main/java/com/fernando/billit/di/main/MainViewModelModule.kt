@@ -2,6 +2,7 @@ package com.fernando.billit.di.main
 
 import androidx.lifecycle.ViewModel
 import com.fernando.billit.di.ViewModelKey
+import com.fernando.billit.viewmodel.BillDetailsViewModel
 import com.fernando.billit.viewmodel.FriendViewModel
 import dagger.Binds
 import dagger.Module
@@ -14,5 +15,10 @@ abstract class MainViewModelModule {
     @IntoMap
     @ViewModelKey(FriendViewModel::class)
     abstract fun bindFriendViewModel(viewModel: FriendViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BillDetailsViewModel::class)
+    abstract fun bindBillDetailsViewModel(viewModel: BillDetailsViewModel): ViewModel
 
 }
