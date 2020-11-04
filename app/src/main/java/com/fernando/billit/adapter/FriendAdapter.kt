@@ -27,7 +27,7 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
 
     var friendListFromBill: List<FriendModel>? = null
 
-    private val isFriendScreen = true
+    private var isFriendScreen = true
 
     private var mTotalAmount = 0.0
 
@@ -42,6 +42,10 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
         context = parent.context
 
         return MyViewHolder(binding)
+    }
+
+    fun isFriendScreen(isFriendScreen: Boolean) {
+        this.isFriendScreen = isFriendScreen
     }
 
     fun setFriendsList(friends: List<FriendModel>?) {
@@ -79,6 +83,11 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
 
     fun getFriendAtPosition(position: Int): FriendModel {
         return friendFilterList[position]
+    }
+
+    fun deleteFriendAtPosition(position: Int) {
+        friendFilterList.removeAt(position)
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

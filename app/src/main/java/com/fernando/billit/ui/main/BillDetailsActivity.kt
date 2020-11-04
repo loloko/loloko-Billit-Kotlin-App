@@ -6,14 +6,20 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.fernando.billit.BaseActivity
 import com.fernando.billit.R
 import com.fernando.billit.adapter.FriendAdapter
 import com.fernando.billit.databinding.ActivityBillDetailsBinding
+import com.fernando.billit.dialog.FriendDialog
+import com.fernando.billit.helper.MyButton
+import com.fernando.billit.helper.MyButtonClickListener
+import com.fernando.billit.helper.MySwipeHelper
 import com.fernando.billit.model.FriendModel
 import com.fernando.billit.util.MarginItemDecoration
 import com.fernando.billit.viewmodel.BillDetailsViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
+import kotlinx.android.synthetic.main.activity_friend.*
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -63,7 +69,24 @@ class BillDetailsActivity : BaseActivity() {
         binding.recyclerFriend.layoutManager = LinearLayoutManager(this)
         binding.recyclerFriend.adapter = adapter
         binding.recyclerFriend.addItemDecoration(MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.recycler)))
+        adapter.isFriendScreen(false)
 
+        // Add swipe for recycler view Delete
+        object : MySwipeHelper(this, binding.recyclerFriend, 250) {
+            override fun instantiateMyButton(viewHolder: RecyclerView.ViewHolder, buffer: MutableList<MyButton>) {
+
+                // The last row "Total" can not have option to delete
+                if (viewHolder.adapterPosition != (adapter.itemCount -1)) {
+                    // Button delete
+                    buffer.add(MyButton(this@BillDetailsActivity, getString(R.string.delete), 40, 0, getColor(R.color.billit_red), object : MyButtonClickListener {
+                        override fun onClick(pos: Int) {
+
+                            adapter.deleteFriendAtPosition(pos)
+                        }
+                    }))
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

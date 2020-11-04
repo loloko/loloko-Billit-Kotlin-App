@@ -124,7 +124,7 @@ class FriendActivity : BaseActivity() {
         })
 
         // Add swipe for recycler view (Edit and Delete)
-        object : MySwipeHelper(this, recycler_friends, 250) {
+        object : MySwipeHelper(this, binding.recyclerFriends, 250) {
             override fun instantiateMyButton(viewHolder: RecyclerView.ViewHolder, buffer: MutableList<MyButton>) {
 
                 //button delete
