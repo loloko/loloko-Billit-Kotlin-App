@@ -75,8 +75,10 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
-    // Rounded image
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
+//    // Rounded image
+//    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    implementation "io.coil-kt:coil:0.11.0"
 
     // Gson
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -92,9 +94,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
 
     // Glide
-    def glide_version = '4.11.0'
-    implementation "com.github.bumptech.glide:glide:$glide_version"
-    annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+//    def glide_version = '4.11.0'
+//    implementation "com.github.bumptech.glide:glide:$glide_version"
+//    annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+
+    // RxJava
+    def rxjava_version = '3.0.6'
+    def rxAndroid_version = '2.1.1'
+//    implementation "io.reactivex.rxjava3:rxjava:$rxjava_version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid_version"
 
     // Dagger2 Core
     def dagger_version = '2.29.1'

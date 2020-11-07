@@ -15,6 +15,8 @@ import com.fernando.billit.R
 import com.fernando.billit.databinding.ItemFriendBinding
 import com.fernando.billit.extension.TAG
 import com.fernando.billit.model.FriendModel
+import com.fernando.billit.util.RxBus
+import com.fernando.billit.util.RxEvent
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -136,6 +138,7 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
         fun bind(position: Int) {
             try {
                 binding.apply {
+
                     if (!isFriendScreen && friendFilterList.size == position) {
                         tvFriendName.text = ""
                         tvPaid.text = context.getString(R.string.total)
@@ -149,7 +152,9 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
                         mTotalAmount = 0.0
 
 
-                    tvFriendName.text = friendFilterList[position].name
+                    val friend = friendFilterList[position]
+
+                    tvFriendName.text = friend.name
 
 
                     tracker?.let {
@@ -160,9 +165,15 @@ class FriendAdapter @Inject constructor() : RecyclerView.Adapter<FriendAdapter.M
                         layoutAmount.isVisible = false
                     else {
                         layoutAmount.isVisible = true
-                        tvAmount.text = "%.2f".format(friendFilterList[position].amount)
+                        tvAmount.text = "%.2f".format(friend.amount)
                         mTotalAmount += friendFilterList[position].amount
                     }
+
+                    // Click will happen just when its in the BillDetailsActivity - recycler view
+                    if (!isFriendScreen)
+                        itemView.setOnClickListener {
+                            RxBus.publish(RxEvent.EventOpenDialogPayment(friend))
+                        }
 
                 }
 

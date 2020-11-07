@@ -25,4 +25,16 @@ class BillDetailsViewModel @Inject constructor() : ViewModel() {
     var friendListResult = MutableLiveData<List<FriendModel>>()
 
     fun friendListObserver(): LiveData<List<FriendModel>> = friendListResult
+
+
+    fun changeUserAmountPaidAtPosition(friend: FriendModel){
+        friendListResult.value?.let {
+            val list = it.toMutableList()
+            val index = list.indexOf(friend)
+            list[index] = friend
+
+            friendListResult.value = list
+        }
+
+    }
 }

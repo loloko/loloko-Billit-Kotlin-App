@@ -11,15 +11,17 @@ import com.fernando.billit.BaseActivity
 import com.fernando.billit.R
 import com.fernando.billit.adapter.FriendAdapter
 import com.fernando.billit.databinding.ActivityBillDetailsBinding
-import com.fernando.billit.dialog.FriendDialog
+import com.fernando.billit.dialog.PayBillDialog
 import com.fernando.billit.helper.MyButton
 import com.fernando.billit.helper.MyButtonClickListener
 import com.fernando.billit.helper.MySwipeHelper
 import com.fernando.billit.model.FriendModel
 import com.fernando.billit.util.MarginItemDecoration
+import com.fernando.billit.util.RxBus
+import com.fernando.billit.util.RxEvent
 import com.fernando.billit.viewmodel.BillDetailsViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
-import kotlinx.android.synthetic.main.activity_friend.*
+import io.reactivex.disposables.Disposable
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -27,6 +29,7 @@ class BillDetailsActivity : BaseActivity() {
 
     private lateinit var viewModel: BillDetailsViewModel
     private lateinit var binding: ActivityBillDetailsBinding
+    private lateinit var friendDisposable: Disposable
 
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
@@ -89,6 +92,7 @@ class BillDetailsActivity : BaseActivity() {
         }
     }
 
+    // Receive a list of FriendModel selected in the FriendActivity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -101,6 +105,12 @@ class BillDetailsActivity : BaseActivity() {
     }
 
     private fun subscribeObservers() {
+        // Listener when user click in the friend recycler row
+        friendDisposable = RxBus.listen(RxEvent.EventOpenDialogPayment::class.java).subscribe {
+            if (it != null)
+                PayBillDialog(it.friend).show(supportFragmentManager, "PayBillDialog")
+        }
+
         viewModel.friendListObserver().observe(this) { data ->
             // Show a message in case does not have any friend in the list
             if (data.isEmpty())
@@ -110,5 +120,13 @@ class BillDetailsActivity : BaseActivity() {
 
             adapter.setFriendsList(data)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Destroy listener so wont leak memory
+        if (!friendDisposable.isDisposed)
+            friendDisposable.dispose()
     }
 }
