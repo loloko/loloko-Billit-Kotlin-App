@@ -1,9 +1,11 @@
 package com.fernando.billit.viewmodel
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.fernando.billit.R
+import com.fernando.billit.extension.isEmailValid
 import com.fernando.billit.model.UserModel
 import com.fernando.billit.repository.AuthRepository
 import com.fernando.billit.util.AuthResource
@@ -26,7 +28,11 @@ class ForgotPasswordViewModel @Inject constructor() : ViewModel() {
     fun sendResetPasswordEmail(email: String) {
 
         if (email.isEmpty()) {
-            _userResult.value = AuthResource.error(R.string.required_email)
+            setError(R.string.required_email)
+            return
+        }
+        if (!email.isEmailValid()) {
+            setError(R.string.invalid_email)
             return
         }
 
@@ -46,6 +52,10 @@ class ForgotPasswordViewModel @Inject constructor() : ViewModel() {
         withContext(Main) {
             _userResult.value = value
         }
+    }
+
+    private fun setError(@StringRes string: Int) {
+        _userResult.value = AuthResource.error(string)
     }
 
 }

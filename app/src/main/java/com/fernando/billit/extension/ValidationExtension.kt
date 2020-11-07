@@ -1,15 +1,14 @@
 package com.fernando.billit.extension
 
 import android.content.Context
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.StringRes
-import com.bumptech.glide.load.engine.Resource
 import com.fernando.billit.R
+import java.util.regex.Pattern
 
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -31,6 +30,13 @@ fun Context.isNetworkAvailable(): Boolean {
     toastMessage(R.string.no_internet, null)
 
     return false
+}
+
+fun String.isEmailValid(): Boolean {
+    val expression = "^[\\w.-]+@([\\w\\-]+\\.)+[A-Z]{2,8}$"
+    val pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
+    val matcher = pattern.matcher(this)
+    return matcher.matches()
 }
 
 fun EditText.validateEmpty(@StringRes msg: Int): Boolean {

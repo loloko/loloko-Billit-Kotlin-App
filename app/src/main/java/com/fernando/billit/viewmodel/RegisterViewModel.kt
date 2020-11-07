@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.fernando.billit.R
 import com.fernando.billit.SessionManager
 import com.fernando.billit.extension.codeToBase64
+import com.fernando.billit.extension.isEmailValid
 import com.fernando.billit.model.UserModel
 import com.fernando.billit.repository.AuthRepository
 import com.fernando.billit.util.AuthResource
@@ -38,6 +39,10 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
             setError(R.string.required_email)
             return
         }
+        if (!user.email.isEmailValid()) {
+            setError(R.string.invalid_email)
+            return
+        }
         if (user.password.isEmpty()) {
             setError(R.string.required_password)
             return
@@ -50,6 +55,7 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
             setError(R.string.password_not_match)
             return
         }
+
 
         // Display loading message
         sessionManager.authenticate(AuthResource.loading())
