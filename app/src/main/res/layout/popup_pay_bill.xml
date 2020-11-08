@@ -1,91 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_rounded_6dp"
     android:backgroundTint="@color/colorPrimary"
     android:clipToPadding="false"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:gravity="center">
 
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:id="@+id/textView9"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="42dp"
         android:background="@color/colorPrimaryDark"
         android:gravity="center"
+        android:padding="16dp"
         android:text="@string/divide_amount"
         android:textAlignment="center"
         android:textColor="@color/text_white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/et_amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp"
-        android:orientation="horizontal"
-        android:padding="10dp">
 
-        <TextView
-            android:id="@+id/tv_name_friend"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/name"
-            android:textAlignment="viewStart"
-            android:textColor="@color/text_white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_currency"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/paid"
-            android:textColor="@color/text_white" />
-
-        <EditText
-            android:id="@+id/et_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:autofillHints="@string/amount"
-            android:ems="5"
-            android:hint="@string/amount"
-            android:inputType="numberDecimal"
-            android:maxLength="25"
-            android:textAlignment="center" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_name_friend"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/name"
+        android:textAlignment="viewStart"
+        android:textColor="@color/text_white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/et_amount"
+        app:layout_constraintEnd_toStartOf="@+id/tv_currency"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/bt_cancel_bill_pay"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/billit_red"
-            android:text="@android:string/cancel"
-            android:textColor="@color/text_white" />
+    <TextView
+        android:id="@+id/tv_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="6dp"
+        android:text="@string/paid"
+        android:textColor="@color/text_white"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_name_friend"
+        app:layout_constraintEnd_toStartOf="@+id/et_amount"
+        app:layout_constraintStart_toEndOf="@+id/tv_name_friend"
+        app:layout_constraintTop_toTopOf="@+id/tv_name_friend" />
 
-        <Button
-            android:id="@+id/bt_pay_bill"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/billit_blue"
-            android:text="@string/save"
-            android:textColor="@color/text_white" />
-    </LinearLayout>
+    <EditText
+        android:id="@+id/et_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:autofillHints="@string/amount"
+        android:ems="5"
+        android:hint="@string/amount"
+        android:inputType="numberDecimal"
+        android:maxLength="25"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/tv_currency"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_currency"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
 
-</LinearLayout>
+    <Button
+        android:id="@+id/bt_cancel_bill_pay"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/billit_red"
+        android:text="@android:string/cancel"
+        android:textColor="@color/text_white"
+        app:layout_constraintBaseline_toBaselineOf="@+id/bt_pay_bill"
+        app:layout_constraintEnd_toStartOf="@+id/bt_pay_bill"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/bt_pay_bill"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:background="@color/billit_blue"
+        android:text="@string/save"
+        android:textColor="@color/text_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bt_cancel_bill_pay"
+        app:layout_constraintTop_toBottomOf="@+id/tv_currency" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
