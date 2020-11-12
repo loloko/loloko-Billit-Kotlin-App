@@ -85,7 +85,7 @@ dependencies {
 
     // Facebook and Google
     implementation 'com.facebook.android:facebook-login:5.15.3'
-    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
     // Firebase
     implementation 'com.google.firebase:firebase-analytics-ktx'
