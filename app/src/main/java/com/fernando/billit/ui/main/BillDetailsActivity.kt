@@ -2,6 +2,8 @@ package com.fernando.billit.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
@@ -79,7 +81,7 @@ class BillDetailsActivity : BaseActivity() {
             override fun instantiateMyButton(viewHolder: RecyclerView.ViewHolder, buffer: MutableList<MyButton>) {
 
                 // The last row "Total" can not have option to delete
-                if (viewHolder.adapterPosition != (adapter.itemCount -1)) {
+                if (viewHolder.adapterPosition != (adapter.itemCount - 1)) {
                     // Button delete
                     buffer.add(MyButton(this@BillDetailsActivity, getString(R.string.delete), 40, 0, getColor(R.color.billit_red), object : MyButtonClickListener {
                         override fun onClick(pos: Int) {
@@ -128,5 +130,26 @@ class BillDetailsActivity : BaseActivity() {
         // Destroy listener so wont leak memory
         if (!friendDisposable.isDisposed)
             friendDisposable.dispose()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.details_bill_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when (item.itemId) {
+            R.id.menu_attach -> {
+
+//                startActivity(Intent(this, AttachActivity::class.java))
+                false
+            }
+            R.id.menu_save -> {
+                viewModel.saveBill()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

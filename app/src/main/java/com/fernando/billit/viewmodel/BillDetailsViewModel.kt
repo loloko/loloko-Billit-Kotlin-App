@@ -27,7 +27,7 @@ class BillDetailsViewModel @Inject constructor() : ViewModel() {
     fun friendListObserver(): LiveData<List<FriendModel>> = friendListResult
 
 
-    fun changeUserAmountPaidAtPosition(friend: FriendModel){
+    fun changeUserAmountPaidAtPosition(friend: FriendModel) {
         friendListResult.value?.let {
             val list = it.toMutableList()
             val index = list.indexOf(friend)
@@ -35,6 +35,11 @@ class BillDetailsViewModel @Inject constructor() : ViewModel() {
 
             friendListResult.value = list
         }
+
+    }
+
+    fun saveBill() {
+
 
     }
 }
