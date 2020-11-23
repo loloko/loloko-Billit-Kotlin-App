@@ -12,23 +12,23 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
-class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private val database: FirebaseFirestore) {
+open class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private val database: FirebaseFirestore) {
 
     suspend fun registerUserWithEmail(user: UserModel): AuthResource<UserModel> {
 
         return try {
             auth.createUserWithEmailAndPassword(user.email, user.password).await()
 
-            AuthResource.authenticated(user)
+            AuthResource.Authenticated(user)
 
         } catch (e: FirebaseAuthWeakPasswordException) {
-            AuthResource.error(R.string.weak_password)
+            AuthResource.Error(R.string.weak_password)
         } catch (e: FirebaseAuthInvalidCredentialsException) {
-            AuthResource.error(R.string.invalid_email)
+            AuthResource.Error(R.string.invalid_email)
         } catch (e: FirebaseAuthUserCollisionException) {
-            AuthResource.error(R.string.user_collision)
+            AuthResource.Error(R.string.user_collision)
         } catch (e: Exception) {
-            AuthResource.error(R.string.error_user_register)
+            AuthResource.Error(R.string.error_user_register)
         }
     }
 
@@ -57,14 +57,14 @@ class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private
             user.name = auth.currentUser?.displayName!!
             user.id = user.email.codeToBase64()
 
-            AuthResource.authenticated(user)
+            AuthResource.Authenticated(user)
 
         } catch (e: FirebaseAuthInvalidCredentialsException) {
-            AuthResource.error(R.string.invalid_email)
+            AuthResource.Error(R.string.invalid_email)
         } catch (e: FirebaseAuthUserCollisionException) {
-            AuthResource.error(R.string.user_collision)
+            AuthResource.Error(R.string.user_collision)
         } catch (e: Exception) {
-            AuthResource.error(R.string.error_sign_in)
+            AuthResource.Error(R.string.error_sign_in)
         }
     }
 
@@ -83,30 +83,30 @@ class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private
         return try {
             auth.sendPasswordResetEmail(email).await()
 
-            AuthResource.resetPassword()
+            AuthResource.ResetPassword
 
         } catch (e: FirebaseAuthInvalidCredentialsException) {
-            AuthResource.error(R.string.invalid_email)
+            AuthResource.Error(R.string.invalid_email)
         } catch (e: FirebaseAuthInvalidUserException) {
-            AuthResource.error(R.string.invalid_email)
+            AuthResource.Error(R.string.invalid_email)
         } catch (e: Exception) {
-            AuthResource.error(R.string.error_send_email)
+            AuthResource.Error(R.string.error_send_email)
         }
     }
 
-    suspend fun signInWithEmail(email: String, password: String): AuthResource<UserModel> {
+    open suspend fun signInWithEmail(email: String, password: String): AuthResource<UserModel> {
 
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
 
-            AuthResource.authenticated(UserModel(email.codeToBase64()))
+            AuthResource.Authenticated(UserModel(email.codeToBase64()))
 
         } catch (e: FirebaseAuthInvalidCredentialsException) {
-            AuthResource.error(R.string.invalid_credentials)
+            AuthResource.Error(R.string.invalid_credentials)
         } catch (e: FirebaseAuthInvalidUserException) {
-            AuthResource.error(R.string.invalid_credentials)
+            AuthResource.Error(R.string.invalid_credentials)
         } catch (e: Exception) {
-            AuthResource.error(R.string.error_sign_in)
+            AuthResource.Error(R.string.error_sign_in)
         }
 
     }

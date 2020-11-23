@@ -3,18 +3,19 @@ package com.fernando.billit
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.fernando.billit.model.UserModel
+import com.fernando.billit.repository.AuthRepository
 import com.fernando.billit.util.AuthResource
 import com.fernando.billit.util.TestCoroutineRule
 import com.fernando.billit.viewmodel.LoginViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
@@ -22,57 +23,99 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class LoginTest {
 
-    @get:Rule
+    @Rule
+    @JvmField
     var rule = InstantTaskExecutorRule()
 
-    @get:Rule
+    @Rule
+    @JvmField
     val testCoroutineRule = TestCoroutineRule()
+
+    @Mock
+    private lateinit var repository: AuthRepository
 
     @Mock
     private lateinit var usersObserver: Observer<AuthResource<UserModel>>
 
-    @InjectMocks
-    lateinit var viewModel: LoginViewModel
-
-    @InjectMocks
-    lateinit var sessionManager: SessionManager
-
+    private lateinit var viewModel: LoginViewModel
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-    }
-
-
-    @Before
-    fun before() {
-        viewModel.sessionManager = sessionManager
+        viewModel = LoginViewModel()
+        viewModel.authRepository = repository
+        viewModel.sessionManager = SessionManager()
 
         viewModel.userResultObserver().observeForever(usersObserver)
     }
 
-    @Test
-    fun test_email_is_empty() {
-        testCoroutineRule.runBlockingTest {
-
-            viewModel.signInWithEmail("", "password")
-
-            verify(usersObserver).onChanged(AuthResource.error(R.string.required_email))
-        }
-    }
-
-    @Test
-    fun test_password_is_empty() {
-        testCoroutineRule.runBlockingTest {
-
-            viewModel.signInWithEmail("email@gmail.com", "")
-
-            verify(usersObserver).onChanged(AuthResource.error(R.string.required_password))
-        }
-    }
-
     @After
     fun tearDown() {
-        // do something if required
+
     }
+
+    @Test
+    fun `given error state for empty email field, when signInWithEmail called`() =
+        testCoroutineRule.runBlockingTest {
+
+            //Given
+            val message = R.string.required_email
+
+            //When
+            viewModel.signInWithEmail("", anyString())
+
+            //Then
+            verify(usersObserver).onChanged(AuthResource.Error(message))
+        }
+
+    @Test
+    fun `given error state for empty password field, when signInWithEmail called`() =
+        testCoroutineRule.runBlockingTest {
+
+            //Given
+            val message = R.string.required_password
+
+            //When
+            viewModel.signInWithEmail("ëmail@test.com", "")
+
+            //Then
+            verify(usersObserver).onChanged(AuthResource.Error(message))
+        }
+
+    @Test
+    fun `given error state for invalid credentials, when signInWithEmail called`() =
+        testCoroutineRule.runBlockingTest {
+
+            //Given
+            val message = R.string.invalid_credentials
+            `when`(repository.signInWithEmail(anyString(), anyString()))
+                .thenReturn(AuthResource.Error(message))
+
+            //When
+            viewModel.signInWithEmail("email@test.com", "1212")
+
+            //Then
+            verify(usersObserver).onChanged(AuthResource.Loading)
+            verify(usersObserver).onChanged(AuthResource.Error(message))
+        }
+
+    @Test
+    fun `given success state, when signInWithEmail called`() =
+        testCoroutineRule.runBlockingTest {
+
+            //Given
+            val resource = UserModel("1")
+            `when`(repository.signInWithEmail(anyString(), anyString()))
+                .thenReturn(AuthResource.Authenticated(resource))
+
+            //When
+            viewModel.signInWithEmail("email@test.com", "1212")
+
+            delay(1000)
+
+            //Then
+            verify(usersObserver).onChanged(AuthResource.Loading)
+            verify(usersObserver).onChanged(AuthResource.Authenticated(resource))
+        }
+
 }
