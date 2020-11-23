@@ -9,7 +9,7 @@ import com.fernando.billit.extension.createLoadingPopup
 import com.fernando.billit.extension.isNetworkAvailable
 import com.fernando.billit.extension.toastMessage
 import com.fernando.billit.ui.main.MainActivity
-import com.fernando.billit.util.AuthResource.AuthStatus.*
+import com.fernando.billit.util.AuthResource.*
 import com.fernando.billit.viewmodel.RegisterViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
 import dagger.android.support.DaggerAppCompatActivity
@@ -62,19 +62,19 @@ class RegisterActivity : DaggerAppCompatActivity() {
 
     private fun subscribeObservers() {
         viewModel.userResultObserver().observe(this) { user ->
-            when (user.status) {
-                LOADING -> {
+            when (user) {
+                is Loading -> {
                     loadingPopup.show()
                 }
-                AUTHENTICATED -> {
+                is Authenticated -> {
                     loadingPopup.dismiss()
                     navToMainScreen()
                 }
-                ERROR -> {
+                is Error -> {
                     toastMessage(user.message, isWarning = true)
                     loadingPopup.dismiss()
                 }
-                NOT_AUTHENTICATED -> {
+                is NotAuthenticated -> {
                     loadingPopup.dismiss()
                 }
                 else -> loadingPopup.dismiss()

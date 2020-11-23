@@ -16,11 +16,10 @@ import com.fernando.billit.extension.createLoadingPopup
 import com.fernando.billit.extension.isNetworkAvailable
 import com.fernando.billit.extension.toastMessage
 import com.fernando.billit.ui.main.MainActivity
-import com.fernando.billit.util.AuthResource
+import com.fernando.billit.util.AuthResource.*
 import com.fernando.billit.viewmodel.LoginViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FacebookAuthProvider
@@ -46,6 +45,7 @@ class LoginActivity : DaggerAppCompatActivity() {
     private val mCallbackManager by lazy {
         CallbackManager.Factory.create()
     }
+
     // Google sign in
     private val mGoogleSignInClient by lazy {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
@@ -113,19 +113,19 @@ class LoginActivity : DaggerAppCompatActivity() {
 
     private fun subscribeObservers() {
         viewModel.userResultObserver().observe(this) { user ->
-            when (user.status) {
-                AuthResource.AuthStatus.LOADING -> {
+            when (user) {
+                is Loading -> {
                     loadingPopup.show()
                 }
-                AuthResource.AuthStatus.AUTHENTICATED -> {
+                is Authenticated -> {
                     loadingPopup.dismiss()
                     navToMainScreen()
                 }
-                AuthResource.AuthStatus.ERROR -> {
+                is Error -> {
                     toastMessage(user.message, isWarning = true)
                     loadingPopup.dismiss()
                 }
-                AuthResource.AuthStatus.NOT_AUTHENTICATED -> {
+                is NotAuthenticated -> {
                     loadingPopup.dismiss()
                 }
                 else -> loadingPopup.dismiss()

@@ -9,7 +9,7 @@ import com.fernando.billit.extension.createFinishDialog
 import com.fernando.billit.extension.createLoadingPopup
 import com.fernando.billit.extension.isNetworkAvailable
 import com.fernando.billit.extension.toastMessage
-import com.fernando.billit.util.AuthResource.AuthStatus.*
+import com.fernando.billit.util.AuthResource.*
 import com.fernando.billit.viewmodel.ForgotPasswordViewModel
 import com.fernando.billit.viewmodel.ViewModelProviderFactory
 import dagger.android.support.DaggerAppCompatActivity
@@ -55,15 +55,15 @@ class ForgotPasswordActivity : DaggerAppCompatActivity() {
 
     private fun subscribeObservers() {
         viewModel.userResultObserver().observe(this) { result ->
-            when (result.status) {
-                LOADING -> {
+            when (result) {
+                is Loading -> {
                     loadingPopup.show()
                 }
-                RESET_PASSWORD -> {
+                is ResetPassword -> {
                     loadingPopup.dismiss()
                     createFinishDialog(R.string.email_sent)
                 }
-                ERROR -> {
+                is Error -> {
                     toastMessage(result.message, isWarning = true)
                     loadingPopup.dismiss()
                 }

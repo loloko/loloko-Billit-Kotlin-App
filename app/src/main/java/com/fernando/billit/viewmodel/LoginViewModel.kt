@@ -37,15 +37,14 @@ class LoginViewModel @Inject constructor() : ViewModel() {
         }
 
         // Display loading message
-        sessionManager.authenticate(AuthResource.loading())
-
+        sessionManager.authenticate(AuthResource.Loading)
 
         // Execute in background
         CoroutineScope(Dispatchers.IO).launch {
             // Sign in
             var value = authRepository.signInWithEmail(email, password)
 
-            if (value.status == AuthResource.AuthStatus.AUTHENTICATED) {
+            if (value is AuthResource.Authenticated) {
 
                 // Get user in the database to use in the session
                 val snapshot = authRepository.getUserById(value.data!!.id)
@@ -53,7 +52,7 @@ class LoginViewModel @Inject constructor() : ViewModel() {
                 if (snapshot != null && snapshot.exists()) {
                     val user = snapshot.toObject(UserModel::class.java)
 
-                    value = AuthResource.authenticated(user)
+                    value = AuthResource.Authenticated(user)
                 }
             }
 
@@ -69,30 +68,30 @@ class LoginViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun setError(@StringRes string: Int) {
-        sessionManager.authenticate(AuthResource.error(string))
+        sessionManager.authenticate(AuthResource.Error(string))
     }
 
     fun signInWithCredentials(credentials: AuthCredential) {
 
         // Display loading message
-        sessionManager.authenticate(AuthResource.loading())
+        sessionManager.authenticate(AuthResource.Loading)
 
         // Execute in background
         CoroutineScope(Dispatchers.IO).launch {
             var value = authRepository.signInWithCredentials(credentials)
 
-            if (value.status == AuthResource.AuthStatus.AUTHENTICATED) {
+            if (value is AuthResource.Authenticated) {
                 val snapshot = authRepository.getUserById(value.data?.id!!)
 
                 // If User exist in database, Get it to put in the session
                 if (snapshot != null && snapshot.exists()) {
                     val user = snapshot.toObject(UserModel::class.java)
 
-                    value = AuthResource.authenticated(user)
+                    value = AuthResource.Authenticated(user)
                 } else {
                     // If it is the first time, it will insert the user data in the database
                     if (!authRepository.insertUserFirebaseDatabase(value.data!!))
-                        value = AuthResource.error(R.string.error_sign_in)
+                        value = AuthResource.Error(R.string.error_sign_in)
                 }
             }
 
@@ -114,7 +113,7 @@ class LoginViewModel @Inject constructor() : ViewModel() {
                 if (snapshot != null && snapshot.exists()) {
                     user = snapshot.toObject(UserModel::class.java)
 
-                    setValueToMainThread(AuthResource.authenticated(user))
+                    setValueToMainThread(AuthResource.Authenticated(user))
                 }
             }
         }

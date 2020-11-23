@@ -2,51 +2,18 @@ package com.fernando.billit.util
 
 import androidx.annotation.StringRes
 
- class AuthResource<T>(val status: AuthStatus, val data: T?, val message: Int?) {
-    enum class AuthStatus {
-        AUTHENTICATED, ERROR, LOADING, NOT_AUTHENTICATED, RESET_PASSWORD
-    }
 
-    companion object {
+sealed class AuthResource<out T> {
+    data class Authenticated<out T>(val data: T?) : AuthResource<T>()
 
-        fun <T> authenticated(data: T?): AuthResource<T> {
-            return AuthResource(AuthStatus.AUTHENTICATED, data, null)
-        }
+    data class Error(@StringRes val message: Int) : AuthResource<Nothing>()
 
-        fun <T> error(@StringRes msg: Int): AuthResource<T> {
-            return AuthResource(AuthStatus.ERROR, null, msg)
-        }
+    object NotAuthenticated : AuthResource<Nothing>()
 
-        fun <T> loading(): AuthResource<T> {
-            return AuthResource(AuthStatus.LOADING, null, null)
-        }
+    object Loading : AuthResource<Nothing>()
 
-        fun <T> logout(): AuthResource<T> {
-            return AuthResource(AuthStatus.NOT_AUTHENTICATED, null, null)
-        }
+    object Logout : AuthResource<Nothing>()
 
-        fun <T> resetPassword(): AuthResource<T> {
-            return AuthResource(AuthStatus.RESET_PASSWORD, null, null)
-        }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as AuthResource<*>
-
-        if (status != other.status) return false
-        if (message != other.message) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = status.hashCode()
-        result = 31 * result + (message ?: 0)
-        return result
-    }
-
-
+    object ResetPassword : AuthResource<Nothing>()
 }
+

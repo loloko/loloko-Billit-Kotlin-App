@@ -58,7 +58,7 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
 
 
         // Display loading message
-        sessionManager.authenticate(AuthResource.loading())
+        sessionManager.authenticate(AuthResource.Loading)
 
 
         // Create user ID by converting the email to Base64
@@ -68,7 +68,7 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
         CoroutineScope(IO).launch {
             val value = authRepository.registerUserWithEmail(user)
 
-            if (value.status == AuthResource.AuthStatus.AUTHENTICATED)
+            if (value is AuthResource.Authenticated)
                 authRepository.insertUserFirebaseDatabase(user)
 
 
@@ -84,7 +84,7 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun setError(@StringRes string: Int) {
-        sessionManager.authenticate(AuthResource.error(string))
+        sessionManager.authenticate(AuthResource.Error(string))
     }
 
 }

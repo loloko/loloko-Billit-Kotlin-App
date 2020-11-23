@@ -1,6 +1,7 @@
 package com.fernando.billit.di
 
 import com.fernando.billit.repository.AuthRepository
+import com.fernando.billit.repository.BillRepository
 import com.fernando.billit.repository.FriendRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,4 +16,7 @@ class RepositoryModule {
 
     @Provides
     fun provideFriendRepository(database: FirebaseFirestore): FriendRepository = FriendRepository(database)
+
+    @Provides
+    fun provideBillRepository(database: FirebaseFirestore): BillRepository = BillRepository(database)
 }

@@ -37,7 +37,7 @@ class ForgotPasswordViewModel @Inject constructor() : ViewModel() {
         }
 
         // Display loading popup
-        _userResult.value = AuthResource.loading()
+        _userResult.value = AuthResource.Loading
 
         // Execute in background
         CoroutineScope(IO).launch {
@@ -55,7 +55,7 @@ class ForgotPasswordViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun setError(@StringRes string: Int) {
-        _userResult.value = AuthResource.error(string)
+        _userResult.value = AuthResource.Error(string)
     }
 
 }
