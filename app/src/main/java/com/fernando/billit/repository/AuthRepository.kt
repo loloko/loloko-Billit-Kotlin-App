@@ -12,9 +12,9 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
-open class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private val database: FirebaseFirestore) {
+class AuthRepository @Inject constructor(private val auth: FirebaseAuth, private val database: FirebaseFirestore) {
 
-    suspend fun registerUserWithEmail(user: UserModel): AuthResource<UserModel> {
+   suspend fun registerUserWithEmail(user: UserModel): AuthResource<UserModel> {
 
         return try {
             auth.createUserWithEmailAndPassword(user.email, user.password).await()
@@ -94,7 +94,7 @@ open class AuthRepository @Inject constructor(private val auth: FirebaseAuth, pr
         }
     }
 
-    open suspend fun signInWithEmail(email: String, password: String): AuthResource<UserModel> {
+    suspend fun signInWithEmail(email: String, password: String): AuthResource<UserModel> {
 
         return try {
             auth.signInWithEmailAndPassword(email, password).await()

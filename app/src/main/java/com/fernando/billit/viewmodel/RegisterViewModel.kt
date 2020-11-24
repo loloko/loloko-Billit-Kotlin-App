@@ -25,7 +25,7 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var sessionManager: SessionManager
 
-    var user = UserModel()
+    val user = UserModel()
 
     fun userResultObserver(): LiveData<AuthResource<UserModel>> = sessionManager.getAuthUser()
 
@@ -55,7 +55,6 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
             setError(R.string.password_not_match)
             return
         }
-
 
         // Display loading message
         sessionManager.authenticate(AuthResource.Loading)

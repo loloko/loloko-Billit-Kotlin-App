@@ -1,7 +1,9 @@
-package com.fernando.billit
+package com.fernando.billit.auth
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.fernando.billit.R
+import com.fernando.billit.SessionManager
 import com.fernando.billit.model.UserModel
 import com.fernando.billit.repository.AuthRepository
 import com.fernando.billit.util.AuthResource
