@@ -79,14 +79,9 @@ class FriendViewModel @Inject constructor() : ViewModel() {
     }
 
     private suspend fun getFriends() {
-        val query = friendRepository.getAllFriends(sessionManager.getCurrentUser().id)
+        val resource = friendRepository.getAllFriends(sessionManager.getCurrentUser().id)
 
-        if (query != null) {
-            val list = query.toObjects(FriendModel::class.java)
-
-            setValueToMainThread(ResultResource.Success(list))
-        } else
-            setValueToMainThread(ResultResource.Success(null))
+        setValueToMainThread(resource)
     }
 
     // Set value in the Main Thread

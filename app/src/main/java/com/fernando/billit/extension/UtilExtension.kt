@@ -6,7 +6,6 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.fernando.billit.R
@@ -17,8 +16,12 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 fun String.codeToBase64(): String {
-    return Base64.encodeToString(this.toByteArray(), Base64.DEFAULT)
-        .replace("([\\n\\r])".toRegex(), "")
+    return try {
+        Base64.encodeToString(this.toByteArray(), Base64.DEFAULT)
+            .replace("([\\n\\r])".toRegex(), "")
+    } catch (e: Exception) {
+        "Error"
+    }
 }
 
 fun Double.formatDecimal(): Double {

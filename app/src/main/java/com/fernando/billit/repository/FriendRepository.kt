@@ -1,9 +1,10 @@
 package com.fernando.billit.repository
 
+import com.fernando.billit.R
 import com.fernando.billit.model.FriendModel
 import com.fernando.billit.util.FirebaseConstants
+import com.fernando.billit.util.ResultResource
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -26,17 +27,22 @@ class FriendRepository @Inject constructor(private val database: FirebaseFiresto
         }
     }
 
-    suspend fun getAllFriends(userId: String): QuerySnapshot? {
-
+    suspend fun getAllFriends(userId: String): ResultResource<List<FriendModel>> {
         return try {
-            database.collection(FirebaseConstants.USER.USERS)
+
+            val query = database.collection(FirebaseConstants.USER.USERS)
                 .document(userId)
                 .collection(FirebaseConstants.USER.FRIENDS)
                 .get()
                 .await()
 
+            if (query != null)
+                ResultResource.Success(query.toObjects(FriendModel::class.java))
+            else
+                ResultResource.Success(null)
+
         } catch (e: Exception) {
-            null
+            ResultResource.Error(R.string.no_friend_found)
         }
     }
 
